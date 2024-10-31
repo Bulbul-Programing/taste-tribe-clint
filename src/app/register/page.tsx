@@ -50,7 +50,7 @@ const Register = () => {
                 <Image
                   key={profile}
                   alt="profileImage"
-                  className="border rounded-full block mt-2 mx-auto"
+                  className="border w-20 h-20  rounded-full block mt-2 mx-auto"
                   height={80}
                   src={profile}
                   width={80}
