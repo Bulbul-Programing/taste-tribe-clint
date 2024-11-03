@@ -1,6 +1,7 @@
 import "@/src/styles/globals.css";
 import { Metadata, Viewport } from "next";
 import clsx from "clsx";
+import { Toaster } from "sonner";
 
 import { Providers } from "../lib/providers";
 
@@ -41,6 +42,7 @@ export default function RootLayout({
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
           {children}
+          <Toaster />
         </Providers>
       </body>
     </html>

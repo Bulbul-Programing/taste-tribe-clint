@@ -3,17 +3,20 @@
 import { Button } from "@nextui-org/button";
 import Link from "next/link";
 import { FieldValues, SubmitHandler } from "react-hook-form";
+import { toast, Toaster } from "sonner";
 
 import TTInput from "@/src/components/Form/TTInput";
 import TTForm from "@/src/components/Form/TTForm";
 
 const page = () => {
   const handleSubmit: SubmitHandler<FieldValues> = (data) => {
+    toast.success("succ");
     console.log(data);
   };
 
   return (
     <div className="flex bg-slate-100 justify-center items-center h-screen">
+      <Toaster />
       <div className="w-4/12 bg-white px-4 py-6 rounded-lg">
         <h1 className="text-center text-lg font-semibold">Login</h1>
         <div>

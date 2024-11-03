@@ -1,9 +1,11 @@
+"use client";
 import React from "react";
+import { toast } from "sonner";
 
 const page = () => {
   return (
     <div>
-      <h1>This is home page.</h1>
+      <button onClick={() => toast.success("succ")}>click me</button>
     </div>
   );
 };

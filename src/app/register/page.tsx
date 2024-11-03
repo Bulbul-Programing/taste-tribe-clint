@@ -4,29 +4,63 @@ import { Button } from "@nextui-org/button";
 import Image from "next/image";
 import Link from "next/link";
 import React, { ChangeEvent, useState } from "react";
-import {
-  FieldValues,
-  FormProvider,
-  SubmitHandler,
-  useForm,
-} from "react-hook-form";
+import { FieldValues, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import toast, { Toaster } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 import TTInput from "@/src/components/Form/TTInput";
+import TTForm from "@/src/components/Form/TTForm";
+import registerValidationSchema from "@/src/schemas/register.schemas";
+import { hostImages } from "@/src/utils/ImageUpload";
+import { useRegisterUserMutation } from "@/src/redux/Users/userManagementApi";
 
 const Register = () => {
   const [profilePreview, setProfilePreview] = useState<string[] | []>([]);
+  const [profilePhoto, setProfilePhoto] = useState<File[] | []>([]);
+  const [loading, setLoading] = useState(false);
+  const [signUpUser] = useRegisterUserMutation();
+  const router = useRouter();
 
-  const methods = useForm();
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    setLoading(true);
+    try {
+      let profilePicture;
 
-  const { handleSubmit } = methods;
+      if (profilePhoto) {
+        const uploadPhoto = await hostImages(profilePhoto);
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    console.log(data);
+        profilePicture = uploadPhoto[0];
+      }
+
+      data.profilePicture = profilePicture;
+      data.role = "user";
+      data.premiumStatus = false;
+
+      const res = (await signUpUser(data)) as any;
+
+      console.log(res);
+      if (res?.data?.success) {
+        toast.success("User created successfully");
+        router.push("/");
+      } else if (res?.error?.data?.message) {
+        toast.error(res?.error?.data?.message || "An error occurred");
+      }
+      setLoading(false);
+    } catch (err: any) {
+      console.error(err);
+      const errorMessage =
+        err.response?.data?.message || "An unexpected error occurred";
+
+      toast.error(errorMessage);
+      setLoading(false);
+    }
   };
 
   const handlePhoto = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files![0];
 
+    setProfilePhoto([file]);
     if (file) {
       setProfilePreview([]);
       const reader = new FileReader();
@@ -40,7 +74,8 @@ const Register = () => {
   };
 
   return (
-    <div className="flex bg-slate-100 justify-center items-center h-screen">
+    <div className="flex bg-slate-100 justify-center items-center min-h-screen">
+      <Toaster />
       <div className="w-4/12 bg-white px-4 py-6 rounded-lg">
         <h1 className="text-center text-lg font-semibold">Register</h1>
         <div>
@@ -60,35 +95,40 @@ const Register = () => {
           )}
         </div>
         <div>
-          <FormProvider {...methods}>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <TTInput label="Name" name="name" type="text" />
-              <TTInput label="Email" name="email" type="email" />
-              <TTInput label="Password" name="password" type="password" />
-              <TTInput label="Phone Number" name="phone" type="number" />
-              <div className="my-4">
-                <label
-                  className="py-3 text-sm px-2 border bg-slate-200 rounded-md hover:cursor-pointer hover:bg-slate-300 ease-out font-medium text-center block w-full"
-                  htmlFor="profilePhoto"
-                >
-                  Chose Profile image
-                </label>
-                <input
-                  className="hidden"
-                  id="profilePhoto"
-                  name="profileImage"
-                  type="file"
-                  onChange={handlePhoto}
-                />
-              </div>
-              <Button
-                className="w-full bg-[#17D893] font-bold text flex-1"
-                type="submit"
+          {/* <FormProvider {...methods}> */}
+          <TTForm
+            resolver={zodResolver(registerValidationSchema)}
+            onSubmit={onSubmit}
+          >
+            <TTInput label="Name" name="name" type="text" />
+            <TTInput label="Email" name="email" type="email" />
+            <TTInput label="Password" name="password" type="password" />
+            <TTInput label="Phone Number" name="phone" type="string" />
+            <div className="my-4">
+              <label
+                className="py-3 text-sm px-2 border bg-slate-200 rounded-md hover:cursor-pointer hover:bg-slate-300 ease-out font-medium text-center block w-full"
+                htmlFor="profilePhoto"
               >
-                register
-              </Button>
-            </form>
-          </FormProvider>
+                Chose Profile image
+              </label>
+              <input
+                accept="image/png, image/gif, image/jpeg"
+                className="hidden"
+                id="profilePhoto"
+                name="profileImage"
+                type="file"
+                onChange={handlePhoto}
+              />
+            </div>
+            <Button
+              className="w-full bg-[#17D893] font-bold text flex-1"
+              isLoading={loading}
+              type="submit"
+            >
+              register
+            </Button>
+          </TTForm>
+          {/* </FormProvider> */}
         </div>
         <div className="flex items-center mt-4">
           <div className="border-b border-gray-400 w-full" />
