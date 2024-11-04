@@ -9,11 +9,8 @@ import {
 import { link as linkStyles } from "@nextui-org/theme";
 import NextLink from "next/link";
 import clsx from "clsx";
-import Link from "next/link";
-
 import NavbarDropdown from "./NavbarDropdown";
 import NavbarDropdownMobile from "./NavbarDropdownMobile";
-
 import { siteConfig } from "@/src/config/site";
 import { Logo } from "@/src/components/UI/icons";
 
@@ -52,7 +49,6 @@ export const Navbar = () => {
         justify="end"
       >
         <NavbarItem className="hidden sm:flex gap-2">
-          <Link href="/login"> Login</Link>
           {/* <ThemeSwitch /> */}
         </NavbarItem>
         <NavbarItem className="hidden md:flex">

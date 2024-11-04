@@ -6,7 +6,6 @@ import Link from "next/link";
 import React, { ChangeEvent, useState } from "react";
 import { FieldValues, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 import TTInput from "@/src/components/Form/TTInput";
@@ -14,6 +13,8 @@ import TTForm from "@/src/components/Form/TTForm";
 import registerValidationSchema from "@/src/schemas/register.schemas";
 import { hostImages } from "@/src/utils/ImageUpload";
 import { useRegisterUserMutation } from "@/src/redux/Users/userManagementApi";
+import { useAppDispatch } from "@/src/redux/hooks";
+import { setUser } from "@/src/redux/features/Auth/authSlice";
 
 const Register = () => {
   const [profilePreview, setProfilePreview] = useState<string[] | []>([]);
@@ -21,6 +22,7 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const [signUpUser] = useRegisterUserMutation();
   const router = useRouter();
+  const dispatch = useAppDispatch()
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setLoading(true);
@@ -39,19 +41,17 @@ const Register = () => {
 
       const res = (await signUpUser(data)) as any;
 
-      console.log(res);
       if (res?.data?.success) {
         toast.success("User created successfully");
         router.push("/");
+        dispatch(setUser({ token: res?.data?.data }))
       } else if (res?.error?.data?.message) {
         toast.error(res?.error?.data?.message || "An error occurred");
       }
       setLoading(false);
     } catch (err: any) {
-      console.error(err);
       const errorMessage =
         err.response?.data?.message || "An unexpected error occurred";
-
       toast.error(errorMessage);
       setLoading(false);
     }
@@ -75,7 +75,6 @@ const Register = () => {
 
   return (
     <div className="flex bg-slate-100 justify-center items-center min-h-screen">
-      <Toaster />
       <div className="w-4/12 bg-white px-4 py-6 rounded-lg">
         <h1 className="text-center text-lg font-semibold">Register</h1>
         <div>
