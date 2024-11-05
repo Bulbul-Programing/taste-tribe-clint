@@ -1,11 +1,12 @@
 "use client";
 import React from "react";
-import { toast } from "sonner";
+
+import Slider from "@/src/components/Home/Slider";
 
 const page = () => {
   return (
     <div>
-      <button onClick={() => toast.success("succ")}>click me</button>
+      <Slider />
     </div>
   );
 };

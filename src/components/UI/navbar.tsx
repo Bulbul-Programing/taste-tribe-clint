@@ -1,3 +1,4 @@
+"use client";
 import {
   Navbar as NextUINavbar,
   NavbarContent,
@@ -6,23 +7,30 @@ import {
   NavbarBrand,
   NavbarItem,
 } from "@nextui-org/navbar";
-import { link as linkStyles } from "@nextui-org/theme";
 import NextLink from "next/link";
-import clsx from "clsx";
+import { usePathname } from "next/navigation";
+
 import NavbarDropdown from "./NavbarDropdown";
 import NavbarDropdownMobile from "./NavbarDropdownMobile";
+
 import { siteConfig } from "@/src/config/site";
 import { Logo } from "@/src/components/UI/icons";
 
 export const Navbar = () => {
+  const currentPage = usePathname();
+
   return (
-    <NextUINavbar maxWidth="xl" position="sticky">
+    <NextUINavbar
+      className="bg-black py-2 text-white"
+      maxWidth="xl"
+      position="sticky"
+    >
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
             <Logo height={60} width={60} />
             <p className="font-bold text-inherit">
-              <span className="text-[#19D794]">Taste</span> Tribe
+              <span className="text-[#1BEEA2]">Taste</span> Tribe
             </p>
           </NextLink>
         </NavbarBrand>
@@ -30,11 +38,7 @@ export const Navbar = () => {
           {siteConfig.navItems.map((item) => (
             <NavbarItem key={item.href}>
               <NextLink
-                className={clsx(
-                  linkStyles({ color: "foreground" }),
-                  "data-[active=true]:text-primary data-[active=true]:font-medium",
-                )}
-                color="foreground"
+                className={`${currentPage === item.href && "bg-[#1BEEA2] text-black px-2 py-1 rounded-md"} font-semibold`}
                 href={item.href}
               >
                 {item.label}

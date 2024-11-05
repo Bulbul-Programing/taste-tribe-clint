@@ -7,6 +7,7 @@ import React, { ChangeEvent, useState } from "react";
 import { FieldValues, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 import TTInput from "@/src/components/Form/TTInput";
 import TTForm from "@/src/components/Form/TTForm";
@@ -22,7 +23,7 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const [signUpUser] = useRegisterUserMutation();
   const router = useRouter();
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setLoading(true);
@@ -43,8 +44,13 @@ const Register = () => {
 
       if (res?.data?.success) {
         toast.success("User created successfully");
+        const token = {
+          accessToken: res?.data?.data?.accessToken,
+          refreshToken: res?.data?.data?.refreshToken,
+        };
+
+        dispatch(setUser(token));
         router.push("/");
-        dispatch(setUser({ token: res?.data?.data }))
       } else if (res?.error?.data?.message) {
         toast.error(res?.error?.data?.message || "An error occurred");
       }
@@ -52,6 +58,7 @@ const Register = () => {
     } catch (err: any) {
       const errorMessage =
         err.response?.data?.message || "An unexpected error occurred";
+
       toast.error(errorMessage);
       setLoading(false);
     }
@@ -75,7 +82,7 @@ const Register = () => {
 
   return (
     <div className="flex bg-slate-100 justify-center items-center min-h-screen">
-      <div className="w-4/12 bg-white px-4 py-6 rounded-lg">
+      <div className=" w-10/12  md:w-6/12 lg:w-4/12 bg-white px-4 py-6 rounded-lg">
         <h1 className="text-center text-lg font-semibold">Register</h1>
         <div>
           {profilePreview.length > 0 && (
