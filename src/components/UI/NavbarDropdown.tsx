@@ -1,16 +1,8 @@
-"use client";
-import { Avatar } from "@nextui-org/avatar";
-import { Button } from "@nextui-org/button";
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-} from "@nextui-org/dropdown";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import Image from "next/image";
 
 import { TDecodedUser } from "@/src/types/decodedUser";
 import { verifyToken } from "@/src/utils/veryfyToken";
@@ -22,6 +14,8 @@ const NavbarDropdown = () => {
   const userToken = useAppSelector(useCurrentToken);
   const dispatch = useAppDispatch();
   const [userInfo, setUserInfo] = useState<TDecodedUser | any>({});
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (userToken) {
@@ -43,56 +37,70 @@ const NavbarDropdown = () => {
     router.push(pathname);
   };
 
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      // Close dropdown if the clicked element is outside of dropdownRef
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    // Bind the event listener to document
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      // Clean up the event listener on component unmount
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div>
       {userInfo && userInfo?.email ? (
-        <Dropdown>
-          <DropdownTrigger>
-            <Avatar
-              isBordered
-              className="cursor-pointer"
-              color="success"
+        <div ref={dropdownRef} className="relative inline-block text-left">
+          <button className="cursor-pointer" onClick={toggleDropdown}>
+            <Image
+              alt=""
+              className="w-12 h-12 rounded-full border-2 p-[1px] border-white"
+              height={80}
               src={
                 userInfo.profilePicture ||
                 "https://i.pravatar.cc/150?u=a04258114e29026302d"
               }
+              width={80}
             />
-          </DropdownTrigger>
-          <DropdownMenu aria-label="Static Actions">
-            <DropdownItem
-              onClick={() => handleNavigation(`${userInfo.role}/profile`)}
-            >
-              Profile
-            </DropdownItem>
-            <DropdownItem
-              onClick={() =>
-                handleNavigation(`${userInfo.role}/profile/settings`)
-              }
-            >
-              Settings
-            </DropdownItem>
-            <DropdownItem
-              onClick={() =>
-                handleNavigation(`${userInfo.role}/profile/create-post`)
-              }
-            >
-              Create Post
-            </DropdownItem>
-            <DropdownItem
-              key="delete"
-              className="text-danger"
-              color="danger"
-              onClick={() => handleLogout()}
-            >
-              Logout
-            </DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
+          </button>
+
+          {isOpen && (
+            <div className="absolute right-0 w-56 mt-2 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
+              <div className="py-1">
+                <button className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
+                  <Link href={`${userInfo?.role}/profile`}>Profile</Link>
+                </button>
+                <button
+                  className="block px-4 py-2 text-sm text-red-500 hover:bg-gray-100 w-full text-left"
+                  onClick={() => handleLogout()}
+                >
+                  Log out
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       ) : (
-        <Button>
-          {" "}
-          <Link href="/login">Log In</Link>
-        </Button>
+        <Link
+          className="px-4 py-2 rounded-md bg-[#1BEEA2] text-black font-medium"
+          href="/login"
+        >
+          Log In
+        </Link>
       )}
     </div>
   );
