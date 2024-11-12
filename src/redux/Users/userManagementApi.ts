@@ -67,7 +67,7 @@ const userManagementApi = baseApi.injectEndpoints({
       },
       invalidatesTags: ["user"],
     }),
-    resetPassword: builder.mutation({
+    resetPasswordMailSend: builder.mutation({
       query: (email) => {
         return {
           url: `/resetPassword`,
@@ -77,15 +77,14 @@ const userManagementApi = baseApi.injectEndpoints({
       },
       invalidatesTags: ["user"],
     }),
-    validateTempPassword: builder.mutation({
+    resetPassword: builder.mutation({
       query: (payload) => {
         return {
-          url: `/resetPassword/codeValidate`,
-          method: "POST",
-          body: { email: payload.email, code: payload.code },
+          url: `/resetPassword`,
+          method: "PUT",
+          body: payload,
         };
       },
-      invalidatesTags: ["user"],
     }),
   }),
 });
@@ -97,6 +96,6 @@ export const {
   useRegisterUserMutation,
   useLoginUserMutation,
   useUserInfoQuery,
+  useResetPasswordMailSendMutation,
   useResetPasswordMutation,
-  useValidateTempPasswordMutation,
 } = userManagementApi;

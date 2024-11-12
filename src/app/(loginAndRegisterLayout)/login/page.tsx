@@ -12,8 +12,7 @@ import TTForm from "@/src/components/Form/TTForm";
 import { useAppDispatch } from "@/src/redux/hooks";
 import {
   useLoginUserMutation,
-  useResetPasswordMutation,
-  useValidateTempPasswordMutation,
+  useResetPasswordMailSendMutation,
 } from "@/src/redux/Users/userManagementApi";
 import { setUser } from "@/src/redux/features/Auth/authSlice";
 import Modal from "@/src/components/modal";
@@ -23,13 +22,9 @@ const Login = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [submitResetCode, setSubmitResetCode] = useState(false);
-  const [newPasswordModal, setNewPasswordModal] = useState(false);
-  const [resetPassword] = useResetPasswordMutation();
-  const [validateCode] = useValidateTempPasswordMutation();
-  const [resetEmail, setResetEmail] = useState("");
-
+  const [resetPasswordSendMial] = useResetPasswordMailSendMutation();
   const handleSubmit: SubmitHandler<FieldValues> = async (data) => {
     setLoading(true);
     try {
@@ -58,47 +53,20 @@ const Login = () => {
   };
 
   const handleResetPassword: SubmitHandler<FieldValues> = async (data) => {
-    setLoading(true);
-    setResetEmail(data.email);
+    setModalLoading(true);
     try {
-      const res = await resetPassword(data.email);
+      const res = await resetPasswordSendMial(data.email);
 
-      console.log(res);
       if (res?.data?.success) {
-        setLoading(false);
+        setModalLoading(false);
+        router.push("/");
         toast.success("Reset Password has been sent to your email");
         setIsModalOpen(false);
-        setSubmitResetCode(true);
       }
     } catch (err: any) {
       console.error("error", err);
-      setLoading(false);
-      toast.error(err?.message || "An error occurred");
-    }
-  };
-
-  const handleSubmitTemporaryPassword: SubmitHandler<FieldValues> = async (
-    data,
-  ) => {
-    setLoading(true);
-    const payloadData = {
-      email: resetEmail,
-      code: data.code,
-    };
-
-    try {
-      const res = await validateCode(payloadData);
-
-      console.log(res);
-      if (res?.data?.success) {
-        setLoading(false);
-        toast.success("Reset Password has been sent to your email");
-        setSubmitResetCode(false);
-        setNewPasswordModal(true);
-      }
-    } catch (err: any) {
-      console.error("error", err);
-      setLoading(false);
+      setModalLoading(false);
+      setIsModalOpen(false);
       toast.error(err?.message || "An error occurred");
     }
   };
@@ -155,48 +123,10 @@ const Login = () => {
               <TTInput label="email" name="email" type="email" />
               <Button
                 className="w-full bg-[#17D893] font-bold text flex-1"
-                isLoading={loading}
+                isLoading={modalLoading}
                 type="submit"
               >
                 Reset Password
-              </Button>
-            </TTForm>
-          </Modal>
-        )}
-      </div>
-      <div>
-        {submitResetCode && (
-          <Modal width={400} onClose={() => setSubmitResetCode(false)}>
-            <h1 className="text-lg font-medium">
-              Enter your email for reset password
-            </h1>
-            <TTForm onSubmit={handleSubmitTemporaryPassword}>
-              <TTInput label="Enter code" name="code" type="text" />
-              <Button
-                className="w-full bg-[#17D893] font-bold text flex-1"
-                isLoading={loading}
-                type="submit"
-              >
-                Submit
-              </Button>
-            </TTForm>
-          </Modal>
-        )}
-      </div>
-      <div>
-        {newPasswordModal && (
-          <Modal width={400} onClose={() => setSubmitResetCode(false)}>
-            <h1 className="text-lg font-medium">
-              Enter your email for reset password
-            </h1>
-            <TTForm onSubmit={handleSubmitTemporaryPassword}>
-              <TTInput label="Enter new password" name="code" type="text" />
-              <Button
-                className="w-full bg-[#17D893] font-bold text flex-1"
-                isLoading={loading}
-                type="submit"
-              >
-                Submit
               </Button>
             </TTForm>
           </Modal>
