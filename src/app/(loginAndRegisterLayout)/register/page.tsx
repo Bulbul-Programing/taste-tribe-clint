@@ -39,6 +39,8 @@ const Register = () => {
       data.profilePicture = profilePicture;
       data.role = "user";
       data.premiumStatus = false;
+      data.followers = [];
+      data.following = [];
 
       const res = (await signUpUser(data)) as any;
 

@@ -9,10 +9,7 @@ import {
 } from "@nextui-org/navbar";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
-
 import NavbarDropdown from "./NavbarDropdown";
-import NavbarDropdownMobile from "./NavbarDropdownMobile";
-
 import { siteConfig } from "@/src/config/site";
 import { Logo } from "@/src/components/UI/icons";
 
@@ -25,16 +22,16 @@ export const Navbar = () => {
       maxWidth="xl"
       position="sticky"
     >
-      <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
+      <NavbarContent className="basis-1/5 flex-grow sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
-          <NextLink className="flex justify-start items-center gap-1" href="/">
-            <Logo height={60} width={60} />
-            <p className="font-bold text-inherit">
+          <NextLink className="flex flex-col md:flex-row lg:flex-row justify-start items-center gap-1" href="/">
+            <Logo height={56} width={56} />
+            <p className="font-bold text-inherit text-3xl md:text-base lg:text-base">
               <span className="text-[#1BEEA2]">Taste</span> Tribe
             </p>
           </NextLink>
         </NavbarBrand>
-        <ul className="hidden md:flex lg:flex gap-4 justify-start ml-2">
+        <ul className="hidden md:flex lg:flex gap-4 justify-start md:ml-14 lg:ml-2">
           {siteConfig.navItems.map((item) => (
             <NavbarItem key={item.href}>
               <NextLink
@@ -48,26 +45,9 @@ export const Navbar = () => {
         </ul>
       </NavbarContent>
 
-      <NavbarContent
-        className="hidden sm:flex basis-1/5 sm:basis-full"
-        justify="end"
-      >
-        <NavbarItem className="hidden sm:flex gap-2">
-          {/* <ThemeSwitch /> */}
-        </NavbarItem>
-        <NavbarItem className="hidden md:flex">
-          <NavbarDropdown />
-        </NavbarItem>
+      <NavbarContent className="w-32 flex-shrink-0" justify="end">
+        <NavbarDropdown />
       </NavbarContent>
-
-      <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
-        {/* <ThemeSwitch /> */}
-        <NavbarMenuToggle />
-      </NavbarContent>
-
-      <NavbarMenu>
-        <NavbarDropdownMobile />
-      </NavbarMenu>
     </NextUINavbar>
   );
 };

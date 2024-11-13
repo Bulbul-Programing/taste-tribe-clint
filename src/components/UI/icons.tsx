@@ -11,7 +11,7 @@ export const Logo: React.FC<IconSvgProps> = ({
 }) => (
   <Image
     alt="logo"
-    className="bg-white rounded-full"
+    className="bg-white hidden md:block lg:block rounded-full"
     height={`${height ? Number(height) : 50}`}
     src={
       "https://res.cloudinary.com/depy0i4bl/image/upload/v1730039979/freepik-green-food-restaurant-logo-202410271439285TqI_r2o7gv.png"

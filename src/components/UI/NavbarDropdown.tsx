@@ -3,11 +3,12 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import Image from "next/image";
-
+import { Skeleton } from "@nextui-org/react";
 import { TDecodedUser } from "@/src/types/decodedUser";
 import { verifyToken } from "@/src/utils/veryfyToken";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import { logout, useCurrentToken } from "@/src/redux/features/Auth/authSlice";
+import { useUserInfoQuery } from "@/src/redux/Users/userManagementApi";
 
 const NavbarDropdown = () => {
   const router = useRouter();
@@ -15,6 +16,7 @@ const NavbarDropdown = () => {
   const dispatch = useAppDispatch();
   const [userInfo, setUserInfo] = useState<TDecodedUser | any>({});
   const [isOpen, setIsOpen] = useState(false);
+  const { data, isLoading } = useUserInfoQuery(userInfo.email, { skip: !userInfo.email })
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -61,6 +63,10 @@ const NavbarDropdown = () => {
     };
   }, []);
 
+  if (isLoading) {
+    return <Skeleton className="w-12 h-12 rounded-full"></Skeleton>;
+  }
+
   return (
     <div>
       {userInfo && userInfo?.email ? (
@@ -68,7 +74,7 @@ const NavbarDropdown = () => {
           <button className="cursor-pointer" onClick={toggleDropdown}>
             <Image
               alt=""
-              className="w-12 h-12 rounded-full border-2 p-[1px] border-white"
+              className="w-14 h-14 rounded-full border-2 p-[1px] border-white"
               height={80}
               src={
                 userInfo.profilePicture ||
@@ -81,8 +87,17 @@ const NavbarDropdown = () => {
           {isOpen && (
             <div className="absolute right-0 w-56 mt-2 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
               <div className="py-1">
-                <button className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
-                  <Link href={`${userInfo?.role}/profile`}>Profile</Link>
+                <div className="px-4 py-2 text-black">
+                  <img src={data.data.profilePicture} className="w-16 h-16 mb-1 rounded-full mx-auto" alt="" />
+                  <h1 className="text-lg font-medium text-center ">{data.data.name}</h1>
+                  <div className="flex justify-between gap-x-1 items-center mt-1">
+                    <p className="text-sm border rounded-md hover:text-black hover:bg-[#1BEEA2] border-[#1BEEA2] transition-all ease-in px-1"><span className=" text-lg">{data.data.followers.length}</span> Followers</p>
+                    <p className="text-sm border rounded-md hover:text-black hover:bg-[#1BEEA2] border-[#1BEEA2] transition-all ease-in px-1"><span className=" text-lg">{data.data.following.length}</span> Following</p>
+                  </div>
+                </div>
+                <button className=" px-4 py-2 flex flex-col text-sm text-gray-700 w-full text-left">
+                  <Link href={`${userInfo?.role}/profile`} className="mt-2 border w-full p-2 hover:bg-[#1BEEA2] transition-all ease-in rounded-md ">Profile</Link>
+                  <Link href={`${userInfo?.role}/dashboard`} className="mt-2 border w-full p-2 hover:bg-[#1BEEA2] transition-all ease-in rounded-md ">Dashboard</Link>
                 </button>
                 <button
                   className="block px-4 py-2 text-sm text-red-500 hover:bg-gray-100 w-full text-left"
