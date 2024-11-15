@@ -2,14 +2,14 @@
 import {
   Navbar as NextUINavbar,
   NavbarContent,
-  NavbarMenu,
-  NavbarMenuToggle,
   NavbarBrand,
   NavbarItem,
 } from "@nextui-org/navbar";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
+
 import NavbarDropdown from "./NavbarDropdown";
+
 import { siteConfig } from "@/src/config/site";
 import { Logo } from "@/src/components/UI/icons";
 
@@ -22,9 +22,15 @@ export const Navbar = () => {
       maxWidth="xl"
       position="sticky"
     >
-      <NavbarContent className="basis-1/5 flex-grow sm:basis-full" justify="start">
+      <NavbarContent
+        className="basis-1/5 flex-grow sm:basis-full"
+        justify="start"
+      >
         <NavbarBrand as="li" className="gap-3 max-w-fit">
-          <NextLink className="flex flex-col md:flex-row lg:flex-row justify-start items-center gap-1" href="/">
+          <NextLink
+            className="flex flex-col md:flex-row lg:flex-row justify-start items-center gap-1"
+            href="/"
+          >
             <Logo height={56} width={56} />
             <p className="font-bold text-inherit text-3xl md:text-base lg:text-base">
               <span className="text-[#1BEEA2]">Taste</span> Tribe

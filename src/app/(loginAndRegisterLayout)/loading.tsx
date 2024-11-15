@@ -1,11 +1,12 @@
-import { Skeleton} from "@nextui-org/react";
+"use client";
+import { Skeleton } from "@nextui-org/react";
 
 const loading = () => {
-    return (
-        <div>
-            <Skeleton className="w-16 h-16 rounded-full"></Skeleton>
-        </div>
-    );
+  return (
+    <div>
+      <Skeleton className="w-16 h-16 rounded-full" />
+    </div>
+  );
 };
 
 export default loading;

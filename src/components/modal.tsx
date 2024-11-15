@@ -1,3 +1,4 @@
+"use client"
 import React, { useEffect, useRef } from "react";
 
 interface ModalProps {
@@ -27,13 +28,15 @@ const Modal: React.FC<ModalProps> = ({ onClose, children, width = 450 }) => {
   }, [onClose]);
 
   return (
-    <div className="absolute top-0 z-50 right-0 left-0 bottom-0 h-screen bg-black/50 flex justify-center items-center">
+    <div className="fixed inset-0 z-50 bg-black/50 flex justify-center items-center">
       <div
         ref={modalRef}
-        className="bg-white rounded-lg flex justify-center items-center"
-        style={{ width: `${width}px` }}
+        className="bg-white rounded-lg overflow-y-auto max-h-[90vh] w-full md:w-auto"
+        style={{ width: `${width}px`, maxHeight: '90vh' }}
       >
-        <div className="w-full p-4">{children}</div>
+        <div className="w-full p-4 overflow-y-auto">
+          {children}
+        </div>
       </div>
     </div>
   );

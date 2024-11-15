@@ -120,7 +120,7 @@ const Register = () => {
                 Chose Profile image
               </label>
               <input
-                accept="image/png, image/gif, image/jpeg"
+                accept="image/png, image/jpeg"
                 className="hidden"
                 id="profilePhoto"
                 name="profileImage"
