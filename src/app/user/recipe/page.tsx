@@ -21,6 +21,7 @@ import { useCurrentToken } from "@/src/redux/features/Auth/authSlice";
 import { verifyToken } from "@/src/utils/veryfyToken";
 import { TDecodedUser } from "@/src/types/decodedUser";
 import { useCreateRecipeMutation } from "@/src/redux/Recipes/recipeManagementApi";
+import AllRecipes from "@/src/components/DRecipe/AllRecipes";
 
 const Recipe = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -56,7 +57,7 @@ const Recipe = () => {
         setInstructions([])
         setLoading(false)
     };
-    console.log(instructions, ingredients);
+
     const handleRecipe: SubmitHandler<FieldValues> = async (data) => {
         if (instructions.length < 1) {
             return toast.error('Instructions are not available. Please fill the instructions')
@@ -85,6 +86,7 @@ const Recipe = () => {
             console.log(res);
             if (res?.data?.success) {
                 setLoading(false);
+                handleModalClose()
                 return toast.success(res.data.massage)
             }
 
@@ -180,7 +182,7 @@ const Recipe = () => {
     ];
 
     return (
-        <div className="mr-4 my-4">
+        <div className="my-4">
             <div className="bg-cover rounded-md bg-center bg-no-repeat bg-[url('https://res.cloudinary.com/depy0i4bl/image/upload/v1731513169/brooke-lark-of0pMsWApZE-unsplash_kxhhnb.jpg')]">
                 <h1 className="bg-black/50 py-20 rounded-md text-3xl font-bold text-center text-white">
                     My Recipe
@@ -340,6 +342,9 @@ const Recipe = () => {
                         </TTForm>
                     </Modal>
                 )}
+            </div>
+            <div>
+                <AllRecipes />
             </div>
         </div>
     );

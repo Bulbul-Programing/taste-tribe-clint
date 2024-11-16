@@ -15,6 +15,7 @@ const TTInput = ({
   label,
   disabled = false,
   required = true,
+  defaultValue
 }: IProps) => {
   const {
     register,
@@ -34,6 +35,7 @@ const TTInput = ({
       size={size}
       type={type}
       variant={variant}
+      defaultValue={defaultValue}
     />
   );
 };

@@ -19,6 +19,7 @@ import { verifyToken } from "@/src/utils/veryfyToken";
 import { TDecodedUser } from "@/src/types/decodedUser";
 import { logout, useCurrentToken } from "@/src/redux/features/Auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
+import UserDashboardSkeleton from "@/src/components/Skelton/userDashboardSkeleton";
 
 const UserDashboardLayout = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
@@ -69,7 +70,7 @@ const UserDashboardLayout = ({ children }: { children: ReactNode }) => {
   };
 
   if (isLoading) {
-    return <Skeleton className="w-12 h-12 rounded-full" />;
+    return <UserDashboardSkeleton />
   }
 
   const dashboardNavItem = [
@@ -130,13 +131,11 @@ const UserDashboardLayout = ({ children }: { children: ReactNode }) => {
         )}
 
         <div
-          className={`absolute top-0 left-0 h-screen lg:block bg-[#f1f2f7] text-black transition-all duration-300 ease-in-out transform ${
-            isExpanded ? "w-48 block" : "w-16 hidden"
-          } ${
-            isDrawerOpen
+          className={`absolute top-0 left-0 h-screen lg:block bg-[#f1f2f7] text-black transition-all duration-300 ease-in-out transform ${isExpanded ? "w-48 block" : "w-16 hidden"
+            } ${isDrawerOpen
               ? "translate-x-0"
               : "-translate-x-full lg:translate-x-0"
-          } z-30`}
+            } z-30`}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
@@ -158,9 +157,8 @@ const UserDashboardLayout = ({ children }: { children: ReactNode }) => {
             {dashboardNavItem.map((item, index) => (
               <Link
                 key={index}
-                className={`flex gap-x-2  ${
-                  isExpanded ? "justify-start" : "justify-center"
-                } items-center ${currentPage === item.path ? isExpanded && "bg-[#1BEEA2] rounded-lg" : ""} hover:bg-[#1BEEA2] p-2 m-2 hover:rounded-md`}
+                className={`flex gap-x-2  ${isExpanded ? "justify-start" : "justify-center"
+                  } items-center ${currentPage === item.path ? isExpanded && "bg-[#1BEEA2] rounded-lg" : ""} hover:bg-[#1BEEA2] p-2 m-2 hover:rounded-md`}
                 href={item.path}
               >
                 <div
@@ -176,7 +174,7 @@ const UserDashboardLayout = ({ children }: { children: ReactNode }) => {
           </div>
         </div>
       </div>
-      <div className="ml-20">{children}</div>
+      <div className=" m-3 lg:ml-20">{children}</div>
     </div>
   );
 };
