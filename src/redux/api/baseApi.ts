@@ -6,7 +6,7 @@ const baseQuery = fetchBaseQuery({
   baseUrl: "http://localhost:5000/api/v1",
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
-    const token = (getState() as RootState).auth.token;
+    const token = (getState() as RootState).auth.accessToken;
 
     if (token) {
       headers.set("authorization", `bearer ${token}`);
@@ -19,6 +19,6 @@ const baseQuery = fetchBaseQuery({
 export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery,
+  tagTypes: ["recipe", "User"],
   endpoints: () => ({}),
-  tagTypes: ["booking", "facility", "user"],
 });
