@@ -3,12 +3,9 @@ import { TRecipe } from "@/src/types/recipe";
 import { FiEdit, FiTrash, FiEye, FiEyeOff } from "react-icons/fi";
 import TableSkeleton from "./TableSkeleton";
 import { useState } from "react";
-import Modal from "../modal";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import TTForm from "../Form/TTForm";
-import TTInput from "../Form/TTInput";
+import UpdateRecipe from "./UpdateRecipe";
 
-const tempData = {
+export const tempData = {
     "_id": "",
     "userId": "",
     "title": "",
@@ -23,14 +20,11 @@ const tempData = {
     "__v": 0
   }
   
-
 const AllRecipes = () => {
     const { data, isLoading } = useAllRecipesQuery(undefined)
     const [updateProduct, setUpdateProduct] = useState<TRecipe>(tempData)
     const [isModalOpen, setIsModalOpen] = useState(false)
-    console.log(updateProduct);
-    const { register, handleSubmit, watch, formState } = useForm()
-
+  
     const getUpdateRecipeData = (id: string) => {
         setIsModalOpen(true)
         const updateItem = data.data.filter((item: TRecipe) => item._id === id)
@@ -45,14 +39,9 @@ const AllRecipes = () => {
         alert(`Toggle visibility for ID: ${id}`);
     };
 
-    const handleModalClose = () => {
-        setIsModalOpen(false)
-        setUpdateProduct(tempData)
-    }
+    
 
-    const handleUpdate: SubmitHandler<FieldValues> = (data) => {
-        console.log(data);
-    }
+    
     if (isLoading) {
         return <TableSkeleton />
     }
@@ -113,17 +102,7 @@ const AllRecipes = () => {
                 </tbody>
             </table>
             <div>
-                {
-                    isModalOpen && (
-                        <Modal
-                            onClose={() => handleModalClose()}
-                        >
-                            <TTForm onSubmit={handleUpdate}>
-                                <TTInput label="Title" name="title" defaultValue={updateProduct.title} />
-                            </TTForm>
-                        </Modal>
-                    )
-                }
+                <UpdateRecipe modalState = {isModalOpen} updateProductInfo={updateProduct}/>
             </div>
         </div>
     );
