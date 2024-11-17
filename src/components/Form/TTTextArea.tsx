@@ -12,6 +12,7 @@ export default function FXTextarea({
   name,
   label,
   variant = "bordered",
+  defaultValue,
 }: IProps) {
   const {
     register,
@@ -24,6 +25,7 @@ export default function FXTextarea({
     <Textarea
       {...register(name)}
       className="my-3"
+      defaultValue="something"
       label={label}
       minRows={2}
       value={currentValue || ""}

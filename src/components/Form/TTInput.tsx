@@ -15,7 +15,7 @@ const TTInput = ({
   label,
   disabled = false,
   required = true,
-  defaultValue
+  defaultValue,
 }: IProps) => {
   const {
     register,
@@ -26,6 +26,7 @@ const TTInput = ({
     <Input
       {...register(name)}
       className="my-3"
+      defaultValue={defaultValue}
       disabled={disabled}
       errorMessage={errors[name] ? (errors[name].message as string) : ""}
       isInvalid={!!errors[name]}
@@ -35,7 +36,6 @@ const TTInput = ({
       size={size}
       type={type}
       variant={variant}
-      defaultValue={defaultValue}
     />
   );
 };

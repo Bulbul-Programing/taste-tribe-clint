@@ -13,9 +13,9 @@ const recipeApi = baseApi.injectEndpoints({
       query: () => ({
         url: "/recipe",
         method: "GET",
-      })
-    })
+      }),
+    }),
   }),
 });
 
-export const { useCreateRecipeMutation , useAllRecipesQuery} = recipeApi;
+export const { useCreateRecipeMutation, useAllRecipesQuery } = recipeApi;

@@ -5,7 +5,6 @@ import { IoHomeOutline, IoMenu } from "react-icons/io5";
 import { ReactNode, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Skeleton } from "@nextui-org/skeleton";
 import Link from "next/link";
 import { SlUserFollowing } from "react-icons/sl";
 import { FaRegUser } from "react-icons/fa";
@@ -70,7 +69,7 @@ const UserDashboardLayout = ({ children }: { children: ReactNode }) => {
   };
 
   if (isLoading) {
-    return <UserDashboardSkeleton />
+    return <UserDashboardSkeleton />;
   }
 
   const dashboardNavItem = [
@@ -131,11 +130,13 @@ const UserDashboardLayout = ({ children }: { children: ReactNode }) => {
         )}
 
         <div
-          className={`absolute top-0 left-0 h-screen lg:block bg-[#f1f2f7] text-black transition-all duration-300 ease-in-out transform ${isExpanded ? "w-48 block" : "w-16 hidden"
-            } ${isDrawerOpen
+          className={`absolute top-0 left-0 h-screen lg:block bg-[#f1f2f7] text-black transition-all duration-300 ease-in-out transform ${
+            isExpanded ? "w-48 block" : "w-16 hidden"
+          } ${
+            isDrawerOpen
               ? "translate-x-0"
               : "-translate-x-full lg:translate-x-0"
-            } z-30`}
+          } z-30`}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
@@ -157,8 +158,9 @@ const UserDashboardLayout = ({ children }: { children: ReactNode }) => {
             {dashboardNavItem.map((item, index) => (
               <Link
                 key={index}
-                className={`flex gap-x-2  ${isExpanded ? "justify-start" : "justify-center"
-                  } items-center ${currentPage === item.path ? isExpanded && "bg-[#1BEEA2] rounded-lg" : ""} hover:bg-[#1BEEA2] p-2 m-2 hover:rounded-md`}
+                className={`flex gap-x-2  ${
+                  isExpanded ? "justify-start" : "justify-center"
+                } items-center ${currentPage === item.path ? isExpanded && "bg-[#1BEEA2] rounded-lg" : ""} hover:bg-[#1BEEA2] p-2 m-2 hover:rounded-md`}
                 href={item.path}
               >
                 <div
