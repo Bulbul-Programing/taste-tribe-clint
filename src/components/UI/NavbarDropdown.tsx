@@ -25,11 +25,11 @@ const NavbarDropdown = () => {
   useEffect(() => {
     if (userToken) {
       const decodedToken = verifyToken(userToken) as TDecodedUser;
-      if (decodedToken.exp <= Date.now() / 1000) {
-        dispatch(logout());
-      }
       if (decodedToken) {
         setUserInfo(decodedToken);
+      }
+      else {
+        dispatch(logout());
       }
     } else {
       setUserInfo({});

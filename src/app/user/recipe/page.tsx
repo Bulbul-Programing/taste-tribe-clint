@@ -15,12 +15,13 @@ import TTTextArea from "@/src/components/Form/TTTextArea";
 import TTInput from "@/src/components/Form/TTInput";
 import TTForm from "@/src/components/Form/TTForm";
 import { hostImages } from "@/src/utils/ImageUpload";
-import { useAppSelector } from "@/src/redux/hooks";
-import { useCurrentToken } from "@/src/redux/features/Auth/authSlice";
+import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
+import { logout, useCurrentToken } from "@/src/redux/features/Auth/authSlice";
 import { verifyToken } from "@/src/utils/veryfyToken";
 import { TDecodedUser } from "@/src/types/decodedUser";
 import { useCreateRecipeMutation } from "@/src/redux/Recipes/recipeManagementApi";
 import AllRecipes from "@/src/components/DRecipe/AllRecipes";
+import { useRouter } from "next/navigation";
 
 export const categories = [
   { key: "appetizers", label: "Appetizers" },
@@ -61,12 +62,23 @@ const Recipe = () => {
   const userToken = useAppSelector(useCurrentToken);
   const [userInfo, setUserInfo] = useState<TDecodedUser | any>({});
   const [createRecipe] = useCreateRecipeMutation();
+  const dispatch = useAppDispatch();
+  const router = useRouter()
 
   useEffect(() => {
     if (userToken) {
       const decodedToken = verifyToken(userToken);
-
+      if(decodedToken) {
       setUserInfo(decodedToken);
+      }
+      else{
+        dispatch(logout())
+        router.push("/login");
+      }
+    }
+    else {
+      setUserInfo({});
+      router.push("/login");
     }
   }, [userToken]);
 

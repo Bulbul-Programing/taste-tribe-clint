@@ -69,11 +69,17 @@ const AllRecipes = () => {
   useEffect(() => {
     if (userToken) {
       const decodedToken = verifyToken(userToken) as TDecodedUser
-      if (decodedToken.exp <= Date.now() / 1000) {
-        dispatch(logout());
-        return router.push('/login')
+      if (decodedToken) {
+        setUserInfo(decodedToken);
       }
-      setUserInfo(decodedToken);
+      else {
+        dispatch(logout());
+        router.push("/login");
+      }
+    }
+    else {
+      setUserInfo({});
+      router.push("/login");
     }
   }, [userToken]);
 

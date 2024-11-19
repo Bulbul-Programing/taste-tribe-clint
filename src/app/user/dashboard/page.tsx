@@ -10,7 +10,8 @@ import { verifyToken } from "@/src/utils/veryfyToken";
 import { TDecodedUser } from "@/src/types/decodedUser";
 import { useUserInfoQuery } from "@/src/redux/Users/userManagementApi";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
-import { useCurrentToken } from "@/src/redux/features/Auth/authSlice";
+import { logout, useCurrentToken } from "@/src/redux/features/Auth/authSlice";
+import { useRouter } from "next/navigation";
 
 const UserDashboard = () => {
   const userToken = useAppSelector(useCurrentToken);
@@ -19,6 +20,7 @@ const UserDashboard = () => {
   const { data, isLoading } = useUserInfoQuery(userInfo.email, {
     skip: !userInfo.email,
   });
+  const router = useRouter()
 
   useEffect(() => {
     if (userToken) {
@@ -27,8 +29,13 @@ const UserDashboard = () => {
       if (decodedToken) {
         setUserInfo(decodedToken);
       }
+      else {
+        dispatch(logout());
+        router.push("/login");
+      }
     } else {
       setUserInfo({});
+      dispatch(logout());
     }
   }, [userToken]);
   console.log(data?.data);
