@@ -24,8 +24,9 @@ import { categories } from "@/src/app/user/recipe/page";
 import { hostImages } from "@/src/utils/ImageUpload";
 import { verifyToken } from "@/src/utils/veryfyToken";
 import { TDecodedUser } from "@/src/types/decodedUser";
-import { useAppSelector } from "@/src/redux/hooks";
-import { useCurrentToken } from "@/src/redux/features/Auth/authSlice";
+import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
+import { logout, useCurrentToken } from "@/src/redux/features/Auth/authSlice";
+import { useRouter } from "next/navigation";
 
 export const tempData = {
   _id: "",
@@ -51,6 +52,8 @@ const AllRecipes = () => {
   const [instructions, setInstructions] = useState<
     { title: string; time: string }[] | []
   >([]);
+  const router = useRouter()
+  const dispatch = useAppDispatch();
   const [ingredient, setIngredient] = useState<string>("");
   const [ingredients, setIngredients] = useState<string[] | []>([]);
   const [imagePreview, setImagePreview] = useState<string[] | []>([]);
@@ -65,8 +68,11 @@ const AllRecipes = () => {
 
   useEffect(() => {
     if (userToken) {
-      const decodedToken = verifyToken(userToken);
-
+      const decodedToken = verifyToken(userToken) as TDecodedUser
+      if (decodedToken.exp <= Date.now() / 1000) {
+        dispatch(logout());
+        return router.push('/login')
+      }
       setUserInfo(decodedToken);
     }
   }, [userToken]);
@@ -110,7 +116,6 @@ const AllRecipes = () => {
         try {
           const res = (await deleteRecipe(id)) as any;
 
-          console.log(res);
           if (res?.data?.success) {
             setLoading(false);
             handleModalClose();

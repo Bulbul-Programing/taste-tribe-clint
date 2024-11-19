@@ -35,7 +35,7 @@ const UserDashboardLayout = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (userToken) {
       const decodedToken = verifyToken(userToken);
-
+      
       if (decodedToken) {
         setUserInfo(decodedToken);
       }
