@@ -52,7 +52,7 @@ const Recipe = () => {
   const [instruction, setInstruction] = useState<string>("");
   const [instructionTime, setInstructionTime] = useState("");
   const [instructions, setInstructions] = useState<
-    { title: string; time: string }[] | []
+    { title: string; time: number }[] | []
   >([]);
   const [ingredient, setIngredient] = useState<string>("");
   const [ingredients, setIngredients] = useState<string[] | []>([]);
@@ -159,7 +159,7 @@ const Recipe = () => {
     if (instruction && instructionTime) {
       const instructionData = {
         title: instruction,
-        time: instructionTime,
+        time: Number(instructionTime),
       };
 
       setInstructions((prev) => [...prev, instructionData]);

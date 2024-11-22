@@ -17,9 +17,9 @@ import TableSkeleton from "./TableSkeleton";
 
 import { TRecipe } from "@/src/types/recipe";
 import {
-  useAllRecipesQuery,
   useDeleteRecipeMutation,
   useUpdateRecipeMutation,
+  useUserAllRecipesQuery,
 } from "@/src/redux/Recipes/recipeManagementApi";
 import { categories } from "@/src/app/user/recipe/page";
 import { hostImages } from "@/src/utils/ImageUpload";
@@ -44,7 +44,7 @@ export const tempData = {
 };
 
 const AllRecipes = () => {
-  const { data, isLoading } = useAllRecipesQuery(undefined);
+  const { data, isLoading } = useUserAllRecipesQuery(undefined);
   const [updateProduct, setUpdateProduct] = useState<TRecipe>(tempData);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [instruction, setInstruction] = useState<string>("");

@@ -2,9 +2,9 @@ import { baseApi } from "../api/baseApi";
 
 const recipeApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    allRecipes: builder.query({
+    userAllRecipes: builder.query({
       query: () => ({
-        url: "/recipe",
+        url: "/recipe/user",
         method: "GET",
       }),
       providesTags: ["recipe"],
@@ -43,7 +43,7 @@ const recipeApi = baseApi.injectEndpoints({
 
 export const {
   useCreateRecipeMutation,
-  useAllRecipesQuery,
+  useUserAllRecipesQuery,
   useUpdateRecipeMutation,
   useDeleteRecipeMutation,
 } = recipeApi;
