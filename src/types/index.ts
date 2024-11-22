@@ -13,4 +13,5 @@ export type IInput = {
   name: string;
   disabled?: boolean;
   defaultValue?: string;
+  onChange?: () => void;
 };

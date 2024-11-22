@@ -1,9 +1,11 @@
-const userProfile = () => {
+import UserProfileData from "@/src/components/DUserProfile/UserProfileData";
+
+const UserProfile = () => {
   return (
-    <div>
-      <h1>User profile</h1>
+    <div className=" mx-auto bg-white p-6 rounded-lg shadow-md">
+      <UserProfileData />
     </div>
   );
 };
 
-export default userProfile;
+export default UserProfile;

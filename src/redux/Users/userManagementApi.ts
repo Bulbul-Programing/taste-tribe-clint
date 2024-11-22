@@ -86,6 +86,16 @@ const userManagementApi = baseApi.injectEndpoints({
         };
       },
     }),
+    updateUserData : builder.mutation({
+      query : (payload) =>{
+        return {
+          url : "/user/update",
+          method : "PUT",
+          body : payload
+        }
+      },
+      invalidatesTags : ["user"]
+    })
   }),
 });
 
@@ -98,4 +108,5 @@ export const {
   useUserInfoQuery,
   useResetPasswordMailSendMutation,
   useResetPasswordMutation,
+  useUpdateUserDataMutation
 } = userManagementApi;

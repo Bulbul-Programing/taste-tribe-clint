@@ -7,6 +7,7 @@ import { Button } from "@nextui-org/button";
 import Image from "next/image";
 import { toast } from "sonner";
 import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 
 import Modal from "../modal";
 import TTInput from "../Form/TTInput";
@@ -26,7 +27,6 @@ import { verifyToken } from "@/src/utils/veryfyToken";
 import { TDecodedUser } from "@/src/types/decodedUser";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import { logout, useCurrentToken } from "@/src/redux/features/Auth/authSlice";
-import { useRouter } from "next/navigation";
 
 export const tempData = {
   _id: "",
@@ -52,7 +52,7 @@ const AllRecipes = () => {
   const [instructions, setInstructions] = useState<
     { title: string; time: string }[] | []
   >([]);
-  const router = useRouter()
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const [ingredient, setIngredient] = useState<string>("");
   const [ingredients, setIngredients] = useState<string[] | []>([]);
@@ -68,16 +68,15 @@ const AllRecipes = () => {
 
   useEffect(() => {
     if (userToken) {
-      const decodedToken = verifyToken(userToken) as TDecodedUser
+      const decodedToken = verifyToken(userToken) as TDecodedUser;
+
       if (decodedToken) {
         setUserInfo(decodedToken);
-      }
-      else {
+      } else {
         dispatch(logout());
         router.push("/login");
       }
-    }
-    else {
+    } else {
       setUserInfo({});
       router.push("/login");
     }

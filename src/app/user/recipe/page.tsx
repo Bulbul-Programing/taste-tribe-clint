@@ -8,6 +8,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { FieldValues, SubmitHandler } from "react-hook-form";
 import { RxCross2 } from "react-icons/rx";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 import createRecipeSchema from "@/src/schemas/createRecipeSchema";
 import Modal from "@/src/components/modal";
@@ -21,7 +22,6 @@ import { verifyToken } from "@/src/utils/veryfyToken";
 import { TDecodedUser } from "@/src/types/decodedUser";
 import { useCreateRecipeMutation } from "@/src/redux/Recipes/recipeManagementApi";
 import AllRecipes from "@/src/components/DRecipe/AllRecipes";
-import { useRouter } from "next/navigation";
 
 export const categories = [
   { key: "appetizers", label: "Appetizers" },
@@ -63,20 +63,19 @@ const Recipe = () => {
   const [userInfo, setUserInfo] = useState<TDecodedUser | any>({});
   const [createRecipe] = useCreateRecipeMutation();
   const dispatch = useAppDispatch();
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     if (userToken) {
       const decodedToken = verifyToken(userToken);
-      if(decodedToken) {
-      setUserInfo(decodedToken);
-      }
-      else{
-        dispatch(logout())
+
+      if (decodedToken) {
+        setUserInfo(decodedToken);
+      } else {
+        dispatch(logout());
         router.push("/login");
       }
-    }
-    else {
+    } else {
       setUserInfo({});
       router.push("/login");
     }

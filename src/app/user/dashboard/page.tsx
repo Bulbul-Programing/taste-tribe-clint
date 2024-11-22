@@ -5,13 +5,13 @@ import { FaUsers } from "react-icons/fa";
 import { RiBloggerLine } from "react-icons/ri";
 import { MdOutlineWorkspacePremium } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 import { verifyToken } from "@/src/utils/veryfyToken";
 import { TDecodedUser } from "@/src/types/decodedUser";
 import { useUserInfoQuery } from "@/src/redux/Users/userManagementApi";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import { logout, useCurrentToken } from "@/src/redux/features/Auth/authSlice";
-import { useRouter } from "next/navigation";
 
 const UserDashboard = () => {
   const userToken = useAppSelector(useCurrentToken);
@@ -20,7 +20,7 @@ const UserDashboard = () => {
   const { data, isLoading } = useUserInfoQuery(userInfo.email, {
     skip: !userInfo.email,
   });
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     if (userToken) {
@@ -28,8 +28,7 @@ const UserDashboard = () => {
 
       if (decodedToken) {
         setUserInfo(decodedToken);
-      }
-      else {
+      } else {
         dispatch(logout());
         router.push("/login");
       }

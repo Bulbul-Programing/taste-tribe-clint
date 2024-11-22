@@ -111,7 +111,7 @@ const Register = () => {
             <TTInput label="Name" name="name" type="text" />
             <TTInput label="Email" name="email" type="email" />
             <TTInput label="Password" name="password" type="password" />
-            <TTInput label="Phone Number" name="phone" type="string" />
+            <TTInput label="Phone Number" name="phoneNumber" type="string" />
             <div className="my-4">
               <label
                 className="py-3 text-sm px-2 border bg-slate-200 rounded-md hover:cursor-pointer hover:bg-slate-300 ease-out font-medium text-center block w-full"
