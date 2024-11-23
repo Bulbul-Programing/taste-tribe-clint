@@ -22,6 +22,7 @@ import { verifyToken } from "@/src/utils/veryfyToken";
 import { TDecodedUser } from "@/src/types/decodedUser";
 import { useCreateRecipeMutation } from "@/src/redux/Recipes/recipeManagementApi";
 import AllRecipes from "@/src/components/DRecipe/AllRecipes";
+import UserTotalRecipe from "@/src/components/DRecipe/UserTotalRecipe";
 
 export const categories = [
   { key: "appetizers", label: "Appetizers" },
@@ -214,7 +215,7 @@ const Recipe = () => {
       </div>
       <div className="my-3 flex justify-between">
         <h1 className="text-lg font-bold bg-[#1BEEA2] py-1 px-2 rounded-md">
-          Total Recipe : <span className="text-2xl">15</span>
+          Total Recipe : <span className="text-2xl"><UserTotalRecipe /></span>
         </h1>
         <Button
           className="bg-[#1BEEA2] font-semibold text-lg"

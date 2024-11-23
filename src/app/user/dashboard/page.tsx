@@ -50,7 +50,7 @@ const UserDashboard = () => {
             <p className="text-slate-600 text-sm font-medium">Your total </p>
             <p className="text-sm">
               <span className="text-xl font-semibold">
-                {data?.data?.followers.length}
+                {data?.data?.followers ? data?.data?.followers.length : 0}
               </span>{" "}
               followers
             </p>
@@ -64,7 +64,7 @@ const UserDashboard = () => {
             <p className="text-slate-600 text-sm font-medium">Your total </p>
             <p className="text-sm">
               <span className="text-xl font-semibold">
-                {data?.data?.following.length}
+                {data?.data?.following ? data?.data?.following.length : 0}
               </span>{" "}
               Following
             </p>
@@ -78,7 +78,7 @@ const UserDashboard = () => {
             <p className="text-slate-600 text-sm font-medium">Your share </p>
             <p className="text-sm">
               <span className="text-xl font-semibold">
-                {data?.data?.followers.length + 50}
+                {data?.data?.followers ? data?.data?.following.length : 0}
               </span>{" "}
               recipe{" "}
             </p>

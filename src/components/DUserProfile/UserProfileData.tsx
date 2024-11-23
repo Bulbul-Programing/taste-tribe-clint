@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { IoCameraOutline } from "react-icons/io5";
 import { logout, useCurrentToken } from "@/src/redux/features/Auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
@@ -14,12 +14,14 @@ import TTInput from "../Form/TTInput";
 import { Button } from "@nextui-org/button";
 import { FieldValues, SubmitHandler } from "react-hook-form";
 import { toast } from "sonner";
+import { hostImages } from "@/src/utils/ImageUpload";
 
 type TUpdateUserData = {
     name?: string;
     email: string;
     currentPassword?: string;
     newPassword?: string;
+    profilePicture?: string;
 }
 const UserProfileData = () => {
     const userToken = useAppSelector(useCurrentToken);
@@ -29,6 +31,8 @@ const UserProfileData = () => {
     const [isRequired, setIsRequired] = useState(false)
     const [updateUser] = useUpdateUserDataMutation()
     const [loading, setLoading] = useState(false)
+    const [profilePhoto, setProfilePhoto] = useState<File[] | []>([])
+    const [profilePreview, setProfilePreview] = useState<string[] | []>([]);
 
     const dispatch = useAppDispatch();
     const router = useRouter();
@@ -59,6 +63,22 @@ const UserProfileData = () => {
         }
     }
 
+    const handleUpdateProfilePicture = (e: ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files![0];
+        setSubmitButtonDisable(false)
+        setProfilePhoto([file]);
+        if (file) {
+            setProfilePreview([]);
+            const reader = new FileReader();
+
+            reader.onloadend = () => {
+                setProfilePreview((prev) => [...prev, reader.result as string]);
+            };
+
+            reader.readAsDataURL(file);
+        }
+    }
+
     const handleUpdate: SubmitHandler<FieldValues> = async (data) => {
         setLoading(true)
         let updateData = {} as TUpdateUserData
@@ -78,11 +98,14 @@ const UserProfileData = () => {
         if (data.name !== userData?.data?.name) {
             updateData.name = data.name
         }
-        updateData.email = userData?.data?.email
+        if (profilePhoto.length > 0) {
+            const uploadPhoto = await hostImages(profilePhoto)
+            updateData.profilePicture = uploadPhoto[0]
+        }
 
+        updateData.email = userData?.data?.email
         try {
             const res = await updateUser(updateData) as any
-            console.log(res);
             if (res?.data?.data?.modifiedCount > 0) {
                 setLoading(false)
                 toast.success("User data updated successfully.")
@@ -113,7 +136,7 @@ const UserProfileData = () => {
             </div>
             <div className="flex flex-col md:flex-row lg:flex-row justify-center md:justify-start lg:justify-start items-center mt-[-30px] mx-10">
                 <div className="relative group">
-                    <img className="w-[150px] border-[5px] border-white shadow-2xl h-[150px] rounded-full" src={userData?.data?.profilePicture} alt="" />
+                    <img className="w-[150px] border-[5px] border-white shadow-2xl h-[150px] rounded-full" src={profilePreview.length > 0 ? profilePreview[0] : userData?.data?.profilePicture} alt="" />
                     <label htmlFor="profilePicture" className="absolute inset-0 transition-all ease-out flex items-center group-hover:opacity-100 opacity-0 justify-center bg-black bg-opacity-40 cursor-pointer rounded-full">
                         <IoCameraOutline className="text-3xl text-white font-bold" />
                     </label>
@@ -121,6 +144,7 @@ const UserProfileData = () => {
                         type="file"
                         id="profilePicture"
                         name="profilePicture"
+                        onChange={handleUpdateProfilePicture}
                         className="hidden"
                         accept="image/jpeg, image/png" />
                 </div>

@@ -17,6 +17,7 @@ const userManagementApi = baseApi.injectEndpoints({
           method: "GET",
         };
       },
+      providesTags : ['user']
     }),
     registerUser: builder.mutation({
       query: (args) => {
