@@ -1,4 +1,6 @@
 "use client";
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useEffect, useState } from "react";
 import { SlUserFollowing } from "react-icons/sl";
 import { FaUsers } from "react-icons/fa";
@@ -12,6 +14,7 @@ import { TDecodedUser } from "@/src/types/decodedUser";
 import { useUserInfoQuery } from "@/src/redux/Users/userManagementApi";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import { logout, useCurrentToken } from "@/src/redux/features/Auth/authSlice";
+import { useCountUserAllRecipesQuery } from "@/src/redux/Recipes/recipeManagementApi";
 
 const UserDashboard = () => {
   const userToken = useAppSelector(useCurrentToken);
@@ -20,6 +23,7 @@ const UserDashboard = () => {
   const { data, isLoading } = useUserInfoQuery(userInfo.email, {
     skip: !userInfo.email,
   });
+  const { data: userRecipes, isLoading: userRecipesLoading } = useCountUserAllRecipesQuery(undefined);
   const router = useRouter();
 
   useEffect(() => {
@@ -37,15 +41,18 @@ const UserDashboard = () => {
       dispatch(logout());
     }
   }, [userToken]);
-  console.log(data?.data);
 
+  const handleRoute = (link: string) => {
+    router.push(link);
+  }
+  
   return (
     <div className="py-5 pr-5">
       <div className="flex justify-between items-center shadow-xl p-5 rounded-lg">
         <h1 className="text-2xl font-bold ">Welcome back {data?.data?.name}</h1>
       </div>
       <div className="grid grid-cols-4 gap-x-5 my-7">
-        <div className="bg-slate-100 flex items-center justify-between p-3 rounded-md">
+        <div onClick={() => handleRoute(`/${userInfo.role}/follower`)} className="bg-slate-100 cursor-pointer flex items-center justify-between p-3 rounded-md">
           <div>
             <p className="text-slate-600 text-sm font-medium">Your total </p>
             <p className="text-sm">
@@ -59,7 +66,7 @@ const UserDashboard = () => {
             <SlUserFollowing className="text-4xl" />
           </div>
         </div>
-        <div className="bg-slate-100 flex items-center justify-between p-3 rounded-md">
+        <div onClick={() => handleRoute(`/${userInfo.role}/following`)} className="bg-slate-100 cursor-pointer flex items-center justify-between p-3 rounded-md">
           <div>
             <p className="text-slate-600 text-sm font-medium">Your total </p>
             <p className="text-sm">
@@ -73,12 +80,15 @@ const UserDashboard = () => {
             <FaUsers className="text-4xl" />
           </div>
         </div>
-        <div className="bg-slate-100 flex items-center justify-between p-3 rounded-md">
+        <div
+          className="bg-slate-100 flex items-center cursor-pointer justify-between p-3 rounded-md"
+          onClick={() => handleRoute(`/${userInfo.role}/recipe`)}
+        >
           <div>
             <p className="text-slate-600 text-sm font-medium">Your share </p>
             <p className="text-sm">
               <span className="text-xl font-semibold">
-                {data?.data?.followers ? data?.data?.following.length : 0}
+                {userRecipes?.data ? userRecipes?.data : 0}
               </span>{" "}
               recipe{" "}
             </p>
@@ -87,7 +97,7 @@ const UserDashboard = () => {
             <RiBloggerLine className="text-4xl" />
           </div>
         </div>
-        <div className="bg-slate-100 flex items-center justify-between p-3 rounded-md">
+        <div onClick={() => handleRoute(`/${userInfo.role}/status`)} className="bg-slate-100 cursor-pointer flex items-center justify-between p-3 rounded-md">
           <div>
             <p className="text-slate-600 text-sm font-medium">Your Status </p>
             <p className="text-sm">

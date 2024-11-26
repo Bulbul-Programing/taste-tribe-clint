@@ -38,6 +38,7 @@ export const tempData = {
   cookingTime: 0,
   category: "",
   image: "",
+  premiumStatus: false,
   createdAt: "",
   updatedAt: "",
   __v: 0,
@@ -48,15 +49,16 @@ const AllRecipes = () => {
   const [updateProduct, setUpdateProduct] = useState<TRecipe>(tempData);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [instruction, setInstruction] = useState<string>("");
-  const [instructionTime, setInstructionTime] = useState("");
+  const [instructionTime, setInstructionTime] = useState(0);
   const [instructions, setInstructions] = useState<
-    { title: string; time: string }[] | []
+    { title: string; time: number }[] | []
   >([]);
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [ingredient, setIngredient] = useState<string>("");
   const [ingredients, setIngredients] = useState<string[] | []>([]);
   const [imagePreview, setImagePreview] = useState<string[] | []>([]);
+  const [recipeStatus, setRecipeStatus] = useState(false)
   const [recipePhoto, setRecipePhoto] = useState<File[] | []>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [category, setCategory] = useState("");
@@ -89,7 +91,7 @@ const AllRecipes = () => {
     setIngredient("");
     setCategory("");
     setInstruction("");
-    setInstructionTime("");
+    setInstructionTime(0);
     setInstructions([]);
     setLoading(false);
     setUpdateProduct(tempData);
@@ -160,17 +162,17 @@ const AllRecipes = () => {
     if (instruction && instructionTime) {
       const instructionData = {
         title: instruction,
-        time: instructionTime,
+        time: Number(instructionTime),
       };
 
       setInstructions((prev) => [...prev, instructionData]);
       setInstruction("");
-      setInstructionTime("");
+      setInstructionTime(0);
     }
   };
 
   const handleAddInstructionTime = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInstructionTime(e.target.value);
+    setInstructionTime(Number(e.target.value));
   };
 
   const removeInstruction = (instruction: string) => {
@@ -208,6 +210,7 @@ const AllRecipes = () => {
     data.userId = userInfo.id || "";
     data.category = category;
     data.description = description;
+    data.premiumStatus = recipeStatus
     if (recipePhoto.length > 0) {
       const uploadPhoto = await hostImages(recipePhoto);
 
@@ -219,10 +222,11 @@ const AllRecipes = () => {
       id: updateProduct._id,
       updateData: data,
     };
+    console.log(updateData);
 
     try {
       const res = (await updateRecipe(updateData)) as any;
-
+      console.log(res);
       if (res?.data?.success) {
         setLoading(false);
         handleModalClose();
@@ -262,6 +266,17 @@ const AllRecipes = () => {
     setCategory(e.target.value);
   };
 
+  const handleRecipeStatus = (e: ChangeEvent<HTMLSelectElement>) => {
+    if (e.target.value === 'premium') {
+      setRecipeStatus(true)
+    }
+    if (e.target.value === 'free') {
+      setRecipeStatus(false)
+    }
+  };
+
+  console.log(data);
+
   if (isLoading) {
     return <TableSkeleton />;
   }
@@ -271,15 +286,18 @@ const AllRecipes = () => {
       <table className="min-w-full table-auto border-collapse bg-white shadow-md rounded-lg overflow-hidden">
         <thead className="bg-gradient-to-r from-[#1BEEA2] to-[#17b47a] text-black">
           <tr>
-            <th className="px-6 py-3 text-left text-sm font-medium">Image</th>
-            <th className="px-6 py-3 text-left text-sm font-medium">Title</th>
-            <th className="px-6 py-3 text-left text-sm font-medium">
+            <th className="px-2 py-3 text-left text-sm font-medium">Image</th>
+            <th className="px-2 py-3 text-left text-sm font-medium">Title</th>
+            <th className="px-2 py-3 text-left text-sm font-medium">
               Cooking Time
             </th>
-            <th className="px-6 py-3 text-left text-sm font-medium">
+            <th className="px-2 py-3 text-left text-sm font-medium">
               Category
             </th>
-            <th className="px-6 py-3 text-center text-sm font-medium">
+            <th className="px-2 py-3 text-left text-sm font-medium">
+              Status
+            </th>
+            <th className="px-2 py-3 text-center text-sm font-medium">
               Actions
             </th>
           </tr>
@@ -301,6 +319,9 @@ const AllRecipes = () => {
               <td className="min-w-32 px-2 py-4">{recipe.cookingTime} mins</td>
               <td className="px-2 min-w-32 py-4 capitalize text-gray-700">
                 {recipe.category.replace("_", " ")}
+              </td>
+              <td className={` ${recipe.premiumStatus ? 'text-blue-500 font-bold' : 'text-orange-500 font-bold'} px-2 min-w-32 py-4 capitalize `}>
+                {recipe.premiumStatus ? 'Premium' : 'Free'}
               </td>
               <td className="px-6 py-8 flex items-center justify-center space-x-4">
                 <button
@@ -383,14 +404,14 @@ const AllRecipes = () => {
                   name="timer"
                   size="sm"
                   type="number"
-                  value={instructionTime}
+                  value={instructionTime.toString()}
                   variant="bordered"
                   onChange={handleAddInstructionTime}
                 />
                 <Button
                   className={`ml-2 bg-[#17D893] font-semibold`}
                   isDisabled={
-                    instruction.length > 0 && instructionTime.length > 0
+                    instruction.length > 0 && instructionTime > 0
                       ? false
                       : true
                   }
@@ -471,6 +492,17 @@ const AllRecipes = () => {
                     {category.label}
                   </option>
                 ))}
+              </select>
+              <select
+                required
+                className="w-full border-2 rounded-md text-slate-500 px-2 py-4 mt-3 "
+                defaultValue={updateProduct.premiumStatus ? 'premium' : 'free'}
+                onChange={handleRecipeStatus}>
+                <option className="border" value="">
+                  Recipe Status
+                </option>
+                <option value="premium" className="text-gray-900 bg-gray-100 py-2 px-4">Premium</option>
+                <option value="free" className="text-gray-900 bg-gray-100 py-2 px-4">Free</option>
               </select>
               <TTInput
                 defaultValue={updateProduct.cookingTime.toString()}

@@ -1,7 +1,7 @@
-import React from "react";
+import UserDashboardSkeleton from "@/src/components/Skelton/userDashboardSkeleton";
 
 const loading = () => {
-  return <div>loading....</div>;
+  return <UserDashboardSkeleton />
 };
 
 export default loading;

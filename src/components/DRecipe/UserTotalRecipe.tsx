@@ -1,13 +1,16 @@
-import { useUserAllRecipesQuery } from '@/src/redux/Recipes/recipeManagementApi';
-import { Skeleton } from '@nextui-org/skeleton';
+import { Skeleton } from "@nextui-org/skeleton";
+
+import { useCountUserAllRecipesQuery } from "@/src/redux/Recipes/recipeManagementApi";
 
 const UserTotalRecipe = () => {
-    const { data, isLoading } = useUserAllRecipesQuery(undefined);
+    const { data, isLoading } = useCountUserAllRecipesQuery(undefined);
+
     if (isLoading) {
-        return <Skeleton className='w-2 h-2'></Skeleton>
+        return <Skeleton className="w-2 h-2" />;
     }
+
     return (
-        <span className="text-2xl">{data?.data ? data?.data?.length : 0}</span>
+        <span className="text-2xl">{data?.data ? data?.data : 0}</span>
     );
 };
 

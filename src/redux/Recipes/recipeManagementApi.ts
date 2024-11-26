@@ -9,6 +9,13 @@ const recipeApi = baseApi.injectEndpoints({
       }),
       providesTags: ["recipe"],
     }),
+    countUserAllRecipes: builder.query({
+      query: () => ({
+        url: "/recipe/user/count",
+        method: "GET",
+      }),
+      providesTags: ["recipe"],
+    }),
     createRecipe: builder.mutation({
       query: (recipeInfo) => {
         return {
@@ -44,6 +51,7 @@ const recipeApi = baseApi.injectEndpoints({
 export const {
   useCreateRecipeMutation,
   useUserAllRecipesQuery,
+  useCountUserAllRecipesQuery,
   useUpdateRecipeMutation,
   useDeleteRecipeMutation,
 } = recipeApi;

@@ -63,6 +63,7 @@ const Recipe = () => {
   const userToken = useAppSelector(useCurrentToken);
   const [userInfo, setUserInfo] = useState<TDecodedUser | any>({});
   const [createRecipe] = useCreateRecipeMutation();
+  const [recipeStatus, setRecipeStatus] = useState(false)
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -92,6 +93,7 @@ const Recipe = () => {
     setInstructionTime("");
     setInstructions([]);
     setLoading(false);
+    setRecipeStatus(false)
   };
 
   const handleRecipe: SubmitHandler<FieldValues> = async (data) => {
@@ -116,6 +118,7 @@ const Recipe = () => {
     data.instructions = instructions;
     data.userId = userInfo.id || "";
     data.category = category;
+    data.premiumStatus = recipeStatus
     try {
       let recipePhotoLink;
 
@@ -205,6 +208,14 @@ const Recipe = () => {
   const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
     setCategory(e.target.value);
   };
+  const handleRecipeStatus = (e: ChangeEvent<HTMLSelectElement>) => {
+    if (e.target.value === 'premium') {
+      setRecipeStatus(true)
+    }
+    if (e.target.value === 'free') {
+      setRecipeStatus(false)
+    }
+  };
 
   return (
     <div className="my-4">
@@ -215,7 +226,10 @@ const Recipe = () => {
       </div>
       <div className="my-3 flex justify-between">
         <h1 className="text-lg font-bold bg-[#1BEEA2] py-1 px-2 rounded-md">
-          Total Recipe : <span className="text-2xl"><UserTotalRecipe /></span>
+          Total Recipe :{" "}
+          <span className="text-2xl">
+            <UserTotalRecipe />
+          </span>
         </h1>
         <Button
           className="bg-[#1BEEA2] font-semibold text-lg"
@@ -364,6 +378,16 @@ const Recipe = () => {
                     {category.label}
                   </option>
                 ))}
+              </select>
+              <select
+                required
+                className="w-full border-2 rounded-md text-slate-500 px-2 py-4 mt-3 "
+                onChange={handleRecipeStatus}>
+                <option className="border" value="">
+                  Recipe Status
+                </option>
+                <option value="premium" className="text-gray-900 bg-gray-100 py-2 px-4">Premium</option>
+                <option value="free" className="text-gray-900 bg-gray-100 py-2 px-4">Free</option>
               </select>
               <TTInput
                 label="Cooking Time (minute)"

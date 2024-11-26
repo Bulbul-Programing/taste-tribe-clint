@@ -17,7 +17,7 @@ const userManagementApi = baseApi.injectEndpoints({
           method: "GET",
         };
       },
-      providesTags : ['user']
+      providesTags: ["user"],
     }),
     registerUser: builder.mutation({
       query: (args) => {
@@ -87,16 +87,26 @@ const userManagementApi = baseApi.injectEndpoints({
         };
       },
     }),
-    updateUserData : builder.mutation({
-      query : (payload) =>{
+    updateUserData: builder.mutation({
+      query: (payload) => {
         return {
-          url : "/user/update",
-          method : "PUT",
-          body : payload
-        }
+          url: "/user/update",
+          method: "PUT",
+          body: payload,
+        };
       },
-      invalidatesTags : ["user"]
-    })
+      invalidatesTags: ["user"],
+    }),
+    updateUserStatus: builder.mutation({
+      query: (payload) => {
+        return {
+          url: "/payment/checkout",
+          method: "POST",
+          body: payload,
+        };
+      },
+      invalidatesTags: ["user"],
+    }),
   }),
 });
 
@@ -109,5 +119,6 @@ export const {
   useUserInfoQuery,
   useResetPasswordMailSendMutation,
   useResetPasswordMutation,
-  useUpdateUserDataMutation
+  useUpdateUserDataMutation,
+  useUpdateUserStatusMutation
 } = userManagementApi;

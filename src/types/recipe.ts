@@ -14,6 +14,7 @@ export type TRecipe = {
   cookingTime: number;
   category: string;
   image: string;
+  premiumStatus: boolean;
   createdAt: string;
   updatedAt: string;
 };
