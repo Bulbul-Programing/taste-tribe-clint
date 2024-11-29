@@ -1,9 +1,6 @@
 import type { NextRequest } from "next/server";
 
 import { NextResponse } from "next/server";
-import { GetCurrentUser } from "./utils/getCurrentUser";
-import { useAppSelector } from "./redux/hooks";
-import { useCurrentToken } from "./redux/features/Auth/authSlice";
 import { verifyToken } from "./utils/veryfyToken";
 
 const AuthRoutes = ['/login', '/register']
@@ -12,12 +9,13 @@ type Role = keyof typeof roleBasedRoutes
 
 const roleBasedRoutes = {
   user: [/^\/user/],
-  ADMIN: [/^\/admin/],
+  admin: [/^\/admin/],
 };
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   const token = request.cookies.get('refreshToken')?.value
+
   let user = null
   if (token) {
     user = verifyToken(token)
@@ -28,7 +26,7 @@ export function middleware(request: NextRequest) {
       return NextResponse.next()
     }
     else {
-      NextResponse.redirect(new URL(`/login?redirect=${pathname}`, request.url))
+      return NextResponse.redirect(new URL(`/login`, request.url))
     }
   }
 

@@ -2,6 +2,25 @@ import { baseApi } from "../api/baseApi";
 
 const recipeApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    getAllRecipes: builder.query({
+      query: (args) => {
+        const param = new URLSearchParams()
+        if (args) {
+          const key = Object.keys(args)
+          const value = Object.values(args)
+          for (let index = 0; index < key.length; index++) {
+            param.append(key[index], value[index] as string)
+          }
+        }
+
+        return {
+          url: "/recipe",
+          method: "GET",
+          params: param
+        }
+      },
+      providesTags: ["recipe"],
+    }),
     userAllRecipes: builder.query({
       query: () => ({
         url: "/recipe/user",
@@ -49,6 +68,7 @@ const recipeApi = baseApi.injectEndpoints({
 });
 
 export const {
+  useGetAllRecipesQuery,
   useCreateRecipeMutation,
   useUserAllRecipesQuery,
   useCountUserAllRecipesQuery,
