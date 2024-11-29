@@ -4,10 +4,15 @@ import Image from "next/image";
 import { FaRegClock } from "react-icons/fa6";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import RecentFiveRecipeSkeleton from "../Skelton/RecentFiveRecipeSkeleton";
 
 const RecentFiveRecipe = () => {
     const { data, isLoading } = useGetAllRecipesQuery({ limit: 5, sort: '-createdAt' })
-    console.log(data);
+    
+    if(isLoading) {
+        return <RecentFiveRecipeSkeleton />
+    }
+
     return (
         <div className=" mx-3 md:mx-8 lg:mx-20 my-10">
             <div className="flex justify-center">
@@ -32,7 +37,7 @@ const RecentFiveRecipe = () => {
                             }}
                             viewport={{ once: false }}
                         >
-                            <Link href={`/recipe/details/${recipe._id}`} >
+                            <Link href={`/recipeDetails/${recipe._id}`} >
                                 <div className="bg-white relative p-3 shadow-xl rounded-lg">
                                     <Image src={recipe.image} className="w-full object-cover h-[300px] rounded-md pb-10" width={300} height={300} alt={`${recipe.title} recipe image.`} />
                                     <div className="absolute inset-0 flex items-center justify-center top-52">
@@ -74,7 +79,7 @@ const RecentFiveRecipe = () => {
                             }}
                             viewport={{ once: false }}
                         >
-                            <Link href={`/recipe/details/${recipe._id}`} >
+                            <Link href={`/recipeDetails/${recipe._id}`} >
                                 <div className="bg-white relative p-3 shadow-xl rounded-lg">
                                     <Image src={recipe.image} className="w-full object-cover  rounded-md pb-10" width={400} height={300} alt={`${recipe.title} recipe image.`} />
                                     <div className="absolute inset-0 flex items-center justify-center top-28">
