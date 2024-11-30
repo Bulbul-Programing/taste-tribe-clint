@@ -75,7 +75,7 @@ const ShortSlider = () => {
             </div>
           </Swiper>
         </div>
-        <div className=" w-full lg:w-2/6 space-y-4">
+        <div className=" w-full lg:w-2/6 space-y-2">
           {data?.data?.slice(5, 8).map((recipe: TRecipe) => (
             <Link
               key={recipe._id}
