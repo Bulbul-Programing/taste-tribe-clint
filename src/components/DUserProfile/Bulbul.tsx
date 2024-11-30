@@ -8,8 +8,6 @@ import TTForm from "../Form/TTForm";
 const Bulbul = ({ data }: { data: any }) => {
   const handleUpdate: SubmitHandler<FieldValues> = (data) => {};
 
-  console.log(data);
-
   return (
     <div>
       <div className="max-w-3xl mx-auto mt-5 bg-white p-6 rounded-lg shadow-md">

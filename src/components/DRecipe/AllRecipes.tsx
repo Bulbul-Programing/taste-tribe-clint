@@ -58,7 +58,7 @@ const AllRecipes = () => {
   const [ingredient, setIngredient] = useState<string>("");
   const [ingredients, setIngredients] = useState<string[] | []>([]);
   const [imagePreview, setImagePreview] = useState<string[] | []>([]);
-  const [recipeStatus, setRecipeStatus] = useState(false)
+  const [recipeStatus, setRecipeStatus] = useState(false);
   const [recipePhoto, setRecipePhoto] = useState<File[] | []>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [category, setCategory] = useState("");
@@ -210,7 +210,7 @@ const AllRecipes = () => {
     data.userId = userInfo.id || "";
     data.category = category;
     data.description = description;
-    data.premiumStatus = recipeStatus
+    data.premiumStatus = recipeStatus;
     if (recipePhoto.length > 0) {
       const uploadPhoto = await hostImages(recipePhoto);
 
@@ -222,11 +222,10 @@ const AllRecipes = () => {
       id: updateProduct._id,
       updateData: data,
     };
-    console.log(updateData);
 
     try {
       const res = (await updateRecipe(updateData)) as any;
-      console.log(res);
+
       if (res?.data?.success) {
         setLoading(false);
         handleModalClose();
@@ -267,15 +266,13 @@ const AllRecipes = () => {
   };
 
   const handleRecipeStatus = (e: ChangeEvent<HTMLSelectElement>) => {
-    if (e.target.value === 'premium') {
-      setRecipeStatus(true)
+    if (e.target.value === "premium") {
+      setRecipeStatus(true);
     }
-    if (e.target.value === 'free') {
-      setRecipeStatus(false)
+    if (e.target.value === "free") {
+      setRecipeStatus(false);
     }
   };
-
-  console.log(data);
 
   if (isLoading) {
     return <TableSkeleton />;
@@ -294,9 +291,7 @@ const AllRecipes = () => {
             <th className="px-2 py-3 text-left text-sm font-medium">
               Category
             </th>
-            <th className="px-2 py-3 text-left text-sm font-medium">
-              Status
-            </th>
+            <th className="px-2 py-3 text-left text-sm font-medium">Status</th>
             <th className="px-2 py-3 text-center text-sm font-medium">
               Actions
             </th>
@@ -320,8 +315,10 @@ const AllRecipes = () => {
               <td className="px-2 min-w-32 py-4 capitalize text-gray-700">
                 {recipe.category.replace("_", " ")}
               </td>
-              <td className={` ${recipe.premiumStatus ? 'text-blue-500 font-bold' : 'text-orange-500 font-bold'} px-2 min-w-32 py-4 capitalize `}>
-                {recipe.premiumStatus ? 'Premium' : 'Free'}
+              <td
+                className={` ${recipe.premiumStatus ? "text-blue-500 font-bold" : "text-orange-500 font-bold"} px-2 min-w-32 py-4 capitalize `}
+              >
+                {recipe.premiumStatus ? "Premium" : "Free"}
               </td>
               <td className="px-6 py-8 flex items-center justify-center space-x-4">
                 <button
@@ -411,9 +408,7 @@ const AllRecipes = () => {
                 <Button
                   className={`ml-2 bg-[#17D893] font-semibold`}
                   isDisabled={
-                    instruction.length > 0 && instructionTime > 0
-                      ? false
-                      : true
+                    instruction.length > 0 && instructionTime > 0 ? false : true
                   }
                   size="lg"
                   type="button"
@@ -496,13 +491,24 @@ const AllRecipes = () => {
               <select
                 required
                 className="w-full border-2 rounded-md text-slate-500 px-2 py-4 mt-3 "
-                defaultValue={updateProduct.premiumStatus ? 'premium' : 'free'}
-                onChange={handleRecipeStatus}>
+                defaultValue={updateProduct.premiumStatus ? "premium" : "free"}
+                onChange={handleRecipeStatus}
+              >
                 <option className="border" value="">
                   Recipe Status
                 </option>
-                <option value="premium" className="text-gray-900 bg-gray-100 py-2 px-4">Premium</option>
-                <option value="free" className="text-gray-900 bg-gray-100 py-2 px-4">Free</option>
+                <option
+                  className="text-gray-900 bg-gray-100 py-2 px-4"
+                  value="premium"
+                >
+                  Premium
+                </option>
+                <option
+                  className="text-gray-900 bg-gray-100 py-2 px-4"
+                  value="free"
+                >
+                  Free
+                </option>
               </select>
               <TTInput
                 defaultValue={updateProduct.cookingTime.toString()}

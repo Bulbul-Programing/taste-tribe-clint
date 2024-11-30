@@ -63,7 +63,7 @@ const Recipe = () => {
   const userToken = useAppSelector(useCurrentToken);
   const [userInfo, setUserInfo] = useState<TDecodedUser | any>({});
   const [createRecipe] = useCreateRecipeMutation();
-  const [recipeStatus, setRecipeStatus] = useState(false)
+  const [recipeStatus, setRecipeStatus] = useState(false);
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -93,7 +93,7 @@ const Recipe = () => {
     setInstructionTime("");
     setInstructions([]);
     setLoading(false);
-    setRecipeStatus(false)
+    setRecipeStatus(false);
   };
 
   const handleRecipe: SubmitHandler<FieldValues> = async (data) => {
@@ -118,7 +118,7 @@ const Recipe = () => {
     data.instructions = instructions;
     data.userId = userInfo.id || "";
     data.category = category;
-    data.premiumStatus = recipeStatus
+    data.premiumStatus = recipeStatus;
     try {
       let recipePhotoLink;
 
@@ -130,7 +130,6 @@ const Recipe = () => {
       data.image = recipePhotoLink;
       const res = (await createRecipe(data)) as any;
 
-      console.log(res);
       if (res?.data?.success) {
         setLoading(false);
         handleModalClose();
@@ -209,11 +208,11 @@ const Recipe = () => {
     setCategory(e.target.value);
   };
   const handleRecipeStatus = (e: ChangeEvent<HTMLSelectElement>) => {
-    if (e.target.value === 'premium') {
-      setRecipeStatus(true)
+    if (e.target.value === "premium") {
+      setRecipeStatus(true);
     }
-    if (e.target.value === 'free') {
-      setRecipeStatus(false)
+    if (e.target.value === "free") {
+      setRecipeStatus(false);
     }
   };
 
@@ -382,12 +381,23 @@ const Recipe = () => {
               <select
                 required
                 className="w-full border-2 rounded-md text-slate-500 px-2 py-4 mt-3 "
-                onChange={handleRecipeStatus}>
+                onChange={handleRecipeStatus}
+              >
                 <option className="border" value="">
                   Recipe Status
                 </option>
-                <option value="premium" className="text-gray-900 bg-gray-100 py-2 px-4">Premium</option>
-                <option value="free" className="text-gray-900 bg-gray-100 py-2 px-4">Free</option>
+                <option
+                  className="text-gray-900 bg-gray-100 py-2 px-4"
+                  value="premium"
+                >
+                  Premium
+                </option>
+                <option
+                  className="text-gray-900 bg-gray-100 py-2 px-4"
+                  value="free"
+                >
+                  Free
+                </option>
               </select>
               <TTInput
                 label="Cooking Time (minute)"

@@ -23,7 +23,8 @@ const UserDashboard = () => {
   const { data, isLoading } = useUserInfoQuery(userInfo.email, {
     skip: !userInfo.email,
   });
-  const { data: userRecipes, isLoading: userRecipesLoading } = useCountUserAllRecipesQuery(undefined);
+  const { data: userRecipes, isLoading: userRecipesLoading } =
+    useCountUserAllRecipesQuery(undefined);
   const router = useRouter();
 
   useEffect(() => {
@@ -44,15 +45,18 @@ const UserDashboard = () => {
 
   const handleRoute = (link: string) => {
     router.push(link);
-  }
-  
+  };
+
   return (
     <div className="py-5 pr-5">
       <div className="flex justify-between items-center shadow-xl p-5 rounded-lg">
         <h1 className="text-2xl font-bold ">Welcome back {data?.data?.name}</h1>
       </div>
       <div className="grid grid-cols-4 gap-x-5 my-7">
-        <div onClick={() => handleRoute(`/${userInfo.role}/follower`)} className="bg-slate-100 cursor-pointer flex items-center justify-between p-3 rounded-md">
+        <div
+          className="bg-slate-100 cursor-pointer flex items-center justify-between p-3 rounded-md"
+          onClick={() => handleRoute(`/${userInfo.role}/follower`)}
+        >
           <div>
             <p className="text-slate-600 text-sm font-medium">Your total </p>
             <p className="text-sm">
@@ -66,7 +70,10 @@ const UserDashboard = () => {
             <SlUserFollowing className="text-4xl" />
           </div>
         </div>
-        <div onClick={() => handleRoute(`/${userInfo.role}/following`)} className="bg-slate-100 cursor-pointer flex items-center justify-between p-3 rounded-md">
+        <div
+          className="bg-slate-100 cursor-pointer flex items-center justify-between p-3 rounded-md"
+          onClick={() => handleRoute(`/${userInfo.role}/following`)}
+        >
           <div>
             <p className="text-slate-600 text-sm font-medium">Your total </p>
             <p className="text-sm">
@@ -97,7 +104,10 @@ const UserDashboard = () => {
             <RiBloggerLine className="text-4xl" />
           </div>
         </div>
-        <div onClick={() => handleRoute(`/${userInfo.role}/status`)} className="bg-slate-100 cursor-pointer flex items-center justify-between p-3 rounded-md">
+        <div
+          className="bg-slate-100 cursor-pointer flex items-center justify-between p-3 rounded-md"
+          onClick={() => handleRoute(`/${userInfo.role}/status`)}
+        >
           <div>
             <p className="text-slate-600 text-sm font-medium">Your Status </p>
             <p className="text-sm">

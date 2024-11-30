@@ -14,9 +14,7 @@ const TableSkeleton: React.FC = () => {
             <th className="px-6 py-3 text-left text-sm font-medium">
               Category
             </th>
-            <th className="px-6 py-3 text-left text-sm font-medium">
-              Status
-            </th>
+            <th className="px-6 py-3 text-left text-sm font-medium">Status</th>
             <th className="px-6 py-3 text-center text-sm font-medium">
               Actions
             </th>

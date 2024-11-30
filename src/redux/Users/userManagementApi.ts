@@ -120,5 +120,5 @@ export const {
   useResetPasswordMailSendMutation,
   useResetPasswordMutation,
   useUpdateUserDataMutation,
-  useUpdateUserStatusMutation
+  useUpdateUserStatusMutation,
 } = userManagementApi;

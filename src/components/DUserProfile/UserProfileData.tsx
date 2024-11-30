@@ -10,6 +10,8 @@ import { toast } from "sonner";
 import TTForm from "../Form/TTForm";
 import TTInput from "../Form/TTInput";
 
+import UserSkeleton from "./UserSkeleton";
+
 import { logout, useCurrentToken } from "@/src/redux/features/Auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import {
@@ -19,7 +21,6 @@ import {
 import { TDecodedUser } from "@/src/types/decodedUser";
 import { verifyToken } from "@/src/utils/veryfyToken";
 import { hostImages } from "@/src/utils/ImageUpload";
-import UserSkeleton from "./UserSkeleton";
 
 type TUpdateUserData = {
   name?: string;

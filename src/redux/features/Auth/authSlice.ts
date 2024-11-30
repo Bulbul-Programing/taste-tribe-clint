@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
+
 import { RootState } from "../../store";
 
 type TAuthState = {
@@ -21,12 +22,12 @@ const authSlice = createSlice({
 
       state.accessToken = token.accessToken;
       state.refreshToken = token.refreshToken;
-      Cookies.set('refreshToken', token.refreshToken);
+      Cookies.set("refreshToken", token.refreshToken);
     },
     logout: (state) => {
       state.accessToken = null;
       state.refreshToken = null;
-      Cookies.remove('refreshToken');
+      Cookies.remove("refreshToken");
     },
   },
 });

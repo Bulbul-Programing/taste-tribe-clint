@@ -10,7 +10,7 @@ const page = () => {
     <div>
       <Slider />
       <RecentFiveRecipe />
-      <ShortSlider></ShortSlider>
+      <ShortSlider />
     </div>
   );
 };

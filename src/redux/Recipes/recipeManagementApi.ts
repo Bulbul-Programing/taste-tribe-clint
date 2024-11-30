@@ -4,20 +4,31 @@ const recipeApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllRecipes: builder.query({
       query: (args) => {
-        const param = new URLSearchParams()
+        const param = new URLSearchParams();
+
         if (args) {
-          const key = Object.keys(args)
-          const value = Object.values(args)
+          const key = Object.keys(args);
+          const value = Object.values(args);
+
           for (let index = 0; index < key.length; index++) {
-            param.append(key[index], value[index] as string)
+            param.append(key[index], value[index] as string);
           }
         }
 
         return {
           url: "/recipe",
           method: "GET",
-          params: param
-        }
+          params: param,
+        };
+      },
+      providesTags: ["recipe"],
+    }),
+    getRecipeDetails: builder.query({
+      query: (recipeId) => {
+        return {
+          url: `/recipe/details/${recipeId}`,
+          method: "GET",
+        };
       },
       providesTags: ["recipe"],
     }),
@@ -69,6 +80,7 @@ const recipeApi = baseApi.injectEndpoints({
 
 export const {
   useGetAllRecipesQuery,
+  useGetRecipeDetailsQuery,
   useCreateRecipeMutation,
   useUserAllRecipesQuery,
   useCountUserAllRecipesQuery,
