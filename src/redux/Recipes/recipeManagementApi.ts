@@ -30,7 +30,7 @@ const recipeApi = baseApi.injectEndpoints({
           method: "GET",
         };
       },
-      providesTags: ["recipe"],
+      providesTags: ["recipeDetails"],
     }),
     userAllRecipes: builder.query({
       query: () => ({

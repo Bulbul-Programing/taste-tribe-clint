@@ -5,9 +5,17 @@ import { ImSpoonKnife } from "react-icons/im";
 import { BiCategoryAlt } from "react-icons/bi";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { Button } from "@nextui-org/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useGetRecipeDetailsQuery } from "@/src/redux/Recipes/recipeManagementApi";
+import { Divider } from "@nextui-org/divider";
+import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
+import { logout, useCurrentToken } from "@/src/redux/features/Auth/authSlice";
+import { TDecodedUser } from "@/src/types/decodedUser";
+import { verifyToken } from "@/src/utils/veryfyToken";
+import { useRouter } from "next/navigation";
+import { useAddFollowerMutation } from "@/src/redux/Users/userManagementApi";
+import { toast } from "sonner";
 const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
     const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
     const { data, isLoading } = useGetRecipeDetailsQuery(recipeId, {
@@ -17,6 +25,21 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
     const [intervals, setIntervals] = useState<{ [key: string]: NodeJS.Timeout }>(
         {},
     );
+    const dispatch = useAppDispatch();
+    const userToken = useAppSelector(useCurrentToken);
+    const [userInfo, setUserInfo] = useState<TDecodedUser | any>({});
+    const router = useRouter()
+    const [addFollower] = useAddFollowerMutation()
+    const [loading, setLoading] = useState(false)
+
+    useEffect(() => {
+        if (userToken) {
+            const decodedToken = verifyToken(userToken);
+            if (decodedToken) {
+                setUserInfo(decodedToken);
+            }
+        }
+    }, [userToken])
 
     const toggleIngredient = (ingredient: string) => {
         setSelectedIngredients((prev) =>
@@ -67,10 +90,36 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
         }
     };
 
+    const handleFollow = async () => {
+        if (!userInfo) {
+            dispatch(logout());
+            router.push("/login");
+        }
+        const followerData = {
+            userId: userInfo.id,
+            followerId: data.data.userId._id
+        }
+        try {
+            setLoading(true);
+            const res = (await addFollower(followerData)) as any;
+            if (res?.data?.data?.modifiedCount > 0) {
+                setLoading(false);
+                toast.success("User Followed successfully.");
+            } else if (res?.error?.data?.message) {
+                toast.error(res?.error?.data?.message || "An error occurred");
+                setLoading(false);
+            }
+        } catch (error: any) {
+            console.log(error);
+            toast.error("An error occurred while updating user data.");
+            setLoading(false);
+        }
+    }
+
     if (isLoading) {
         return <div>Loading...</div>;
     }
-
+    console.log(data.data);
     return (
         <div className="mx-5 md:mx-5 lg:mx-20 my-5 md:my-8 lg:my-10">
             <div className="flex flex-col md:flex-row lg:flex-row gap-y-3 gap-x-3 lg:space-x-7 lg:gap-0 justify-center items-center">
@@ -119,7 +168,7 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
             </div>
             <div className="my-10 shadow-xl border p-3 rounded-lg">
                 <div className="w-2/3">
-                    <div className="flex justify-between items-center ">
+                    <div className="flex justify-between mb-2 items-center">
                         <div className="flex items-center gap-x-4">
                             <Image
                                 alt=""
@@ -138,8 +187,13 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
                                 </p>
                             </div>
                         </div>
-                        <Button className="bg-[#1BEEA2]">Follow</Button>
+                        {
+                            data.data.userId.followers.includes(userInfo.id)
+                                ? <Button isLoading={loading} onClick={() => handleFollow()} className="bg-[#1BEEA2]">Unfollow</Button>
+                                : <Button isLoading={loading} onClick={() => handleFollow()} className="bg-[#1BEEA2]">Follow</Button>
+                        }
                     </div>
+                    <Divider />
                     <h1 className="my-4 text-slate-600">
                         <span className="text-lg font-bold text-black">
                             Recipe description :

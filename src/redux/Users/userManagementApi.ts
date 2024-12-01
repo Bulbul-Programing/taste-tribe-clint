@@ -97,6 +97,16 @@ const userManagementApi = baseApi.injectEndpoints({
       },
       invalidatesTags: ["user"],
     }),
+    addFollower: builder.mutation({
+      query: (payload) => {
+        return {
+          url: "/user/addFollower",
+          method: "post",
+          body: payload,
+        };
+      },
+      invalidatesTags: ["user", 'recipeDetails'],
+    }),
     updateUserStatus: builder.mutation({
       query: (payload) => {
         return {
@@ -121,4 +131,5 @@ export const {
   useResetPasswordMutation,
   useUpdateUserDataMutation,
   useUpdateUserStatusMutation,
+  useAddFollowerMutation
 } = userManagementApi;
