@@ -37,6 +37,7 @@ const userManagementApi = baseApi.injectEndpoints({
           body: args,
         };
       },
+      invalidatesTags: ["comment", "recipe", "recipeDetails"],
     }),
     getAllUser: builder.query({
       query: (query) => {

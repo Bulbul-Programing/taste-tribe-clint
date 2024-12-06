@@ -75,6 +75,43 @@ const recipeApi = baseApi.injectEndpoints({
       },
       invalidatesTags: ["recipe"],
     }),
+    addComment: builder.mutation({
+      query: (data) => {
+        return {
+          url: `/comment/create`,
+          method: "POST",
+          body: data,
+        };
+      },
+      invalidatesTags: ["comment"],
+    }),
+    deleteComment: builder.mutation({
+      query: (recipeId) => {
+        return {
+          url: `/comment/${recipeId}`,
+          method: "DELETE",
+        };
+      },
+      invalidatesTags: ["comment"],
+    }),
+
+    getRecipeComments: builder.query({
+      query: (recipeId) => ({
+        url: `/comment/${recipeId}`,
+        method: "GET",
+      }),
+      providesTags: ["comment"],
+    }),
+    addVoteInRecipe: builder.mutation({
+      query: (data) => {
+        return {
+          url: `/recipe/voting/${data.recipeId}`,
+          method: "PUT",
+          body: { voteType: data.voteType },
+        };
+      },
+      invalidatesTags: ["recipeDetails"],
+    }),
   }),
 });
 
@@ -86,4 +123,8 @@ export const {
   useCountUserAllRecipesQuery,
   useUpdateRecipeMutation,
   useDeleteRecipeMutation,
+  useAddCommentMutation,
+  useGetRecipeCommentsQuery,
+  useAddVoteInRecipeMutation,
+  useDeleteCommentMutation,
 } = recipeApi;

@@ -36,8 +36,9 @@ const NavbarDropdown = () => {
     }
   }, [userToken]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     dispatch(logout());
+
     toast.success("Logout successful");
   };
   const handleNavigation = (pathname: string) => {
