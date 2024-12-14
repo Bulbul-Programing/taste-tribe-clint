@@ -35,6 +35,7 @@ import {
 } from "@/src/redux/Users/userManagementApi";
 import { TRecipe } from "@/src/types/recipe";
 import { TRecipeComment } from "@/src/types/recipeComment";
+import RecipeDetailsSkeleton from "../Skelton/RecipeDetailsSkeleton";
 
 const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
   const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
@@ -284,7 +285,7 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <RecipeDetailsSkeleton />;
   }
 
   return (

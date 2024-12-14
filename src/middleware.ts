@@ -30,10 +30,11 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL(`/login`, request.url));
     }
   }
-
+  
   if (user?.role && roleBasedRoutes[user?.role as Role]) {
     const routes = roleBasedRoutes[user?.role as Role];
-
+    console.log(pathname);
+    console.log(routes.some((route) => pathname.match(route)));
     if (routes.some((route) => pathname.match(route))) {
       return NextResponse.next();
     }
@@ -44,5 +45,5 @@ export function middleware(request: NextRequest) {
 
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: ["/admin/:path*", "/user/:path*", "/login", "/response"],
+  matcher: ["/admin/:path*", "/user/:path*", "/login", "/register"],
 };
