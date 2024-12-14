@@ -110,7 +110,7 @@ const recipeApi = baseApi.injectEndpoints({
           body: { voteType: data.voteType },
         };
       },
-      invalidatesTags: ["recipeDetails"],
+      invalidatesTags: ["recipeDetails", 'recipe'],
     }),
   }),
 });

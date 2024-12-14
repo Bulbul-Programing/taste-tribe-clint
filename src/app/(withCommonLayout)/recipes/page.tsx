@@ -1,9 +1,9 @@
-import React from 'react';
+import AllRecipe from "@/src/components/Recipe/AllRecipe";
 
 const Recipe = () => {
     return (
         <div>
-            <h1>Recipe page</h1>
+            <AllRecipe />
         </div>
     );
 };
