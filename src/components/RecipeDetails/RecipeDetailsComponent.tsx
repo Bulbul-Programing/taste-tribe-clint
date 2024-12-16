@@ -285,7 +285,11 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
   };
 
   if (isLoading) {
+<<<<<<< HEAD
     return <RecipeDetailsSkeleton />
+=======
+    return <RecipeDetailsSkeleton />;
+>>>>>>> e40d43c049dfde908a3a53c9e5fdac1f4f6c7e3f
   }
 
   return (
