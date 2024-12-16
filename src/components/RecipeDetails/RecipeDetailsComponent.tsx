@@ -35,6 +35,7 @@ import {
 } from "@/src/redux/Users/userManagementApi";
 import { TRecipe } from "@/src/types/recipe";
 import { TRecipeComment } from "@/src/types/recipeComment";
+import RecipeDetailsSkeleton from "../Skelton/RecipeDetailsSkeleton";
 
 const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
   const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
@@ -284,7 +285,7 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <RecipeDetailsSkeleton />
   }
 
   return (
@@ -389,11 +390,10 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
                   (ingredient: string, index: number) => (
                     <button
                       key={index}
-                      className={`flex items-center gap-2 p-2 border rounded-lg text-sm cursor-pointer ${
-                        selectedIngredients.includes(ingredient)
+                      className={`flex items-center gap-2 p-2 border rounded-lg text-sm cursor-pointer ${selectedIngredients.includes(ingredient)
                           ? "bg-green-100 text-green-800 border-green-300"
                           : "bg-white text-gray-600 border-gray-300"
-                      }`}
+                        }`}
                       onClick={() => toggleIngredient(ingredient)}
                     >
                       <ImSpoonKnife className="text-xl text-[#1BEEA2]" />
@@ -436,7 +436,7 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
                               Remaining:{" "}
                               {formatTime(
                                 timers[instruction._id] ??
-                                  instruction.time * 60,
+                                instruction.time * 60,
                               )}
                             </span>
                           </div>
@@ -450,16 +450,16 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
                             )}
                           </span>
                           <button
-                            className="bg-[#1BEEA2] px-3 py-1 rounded text-white"
+                            className="bg-[#1BEEA2] px-3 py-1 rounded"
                             onClick={() =>
                               timers[instruction._id] !== undefined &&
-                              intervals[instruction._id]
+                                intervals[instruction._id]
                                 ? pauseTimer(instruction._id)
                                 : startTimer(instruction._id, instruction.time)
                             }
                           >
                             {timers[instruction._id] !== undefined &&
-                            intervals[instruction._id]
+                              intervals[instruction._id]
                               ? "Pause"
                               : "Start Timer"}
                           </button>
