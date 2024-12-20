@@ -1,17 +1,24 @@
 "use client";
 import { Button } from "@nextui-org/button";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 
 import { useUpdateUserStatusMutation } from "@/src/redux/Users/userManagementApi";
 
 const Membership = () => {
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect")
+
   const [checkout] = useUpdateUserStatusMutation();
   const router = useRouter();
-
+  console.log(redirect);
   const handleCheckout = async (payableAmount: number) => {
     try {
-      const res = await checkout({ payableAmount });
+      const checkoutParams = {
+        payableAmount,
+        redirectUrl: redirect
+      }
+      const res = await checkout(checkoutParams);
 
       if (res?.data?.url) {
         router.push(res.data.url);

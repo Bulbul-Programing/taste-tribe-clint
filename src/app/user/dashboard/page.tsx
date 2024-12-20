@@ -106,7 +106,7 @@ const UserDashboard = () => {
         </div>
         <div
           className="bg-slate-100 cursor-pointer flex items-center justify-between p-3 rounded-md"
-          onClick={() => handleRoute(`/${userInfo.role}/status`)}
+          onClick={() => handleRoute(`/${userInfo.role}/memberships`)}
         >
           <div>
             <p className="text-slate-600 text-sm font-medium">Your Status </p>

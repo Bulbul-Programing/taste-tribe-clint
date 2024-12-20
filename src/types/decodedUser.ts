@@ -4,4 +4,5 @@ export type TDecodedUser = {
   profilePicture: string;
   iat: number;
   exp: number;
+  premiumStatus: boolean
 };

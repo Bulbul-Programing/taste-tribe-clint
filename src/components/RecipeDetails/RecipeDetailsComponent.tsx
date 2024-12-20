@@ -32,10 +32,12 @@ import { verifyToken } from "@/src/utils/veryfyToken";
 import {
   useAddFollowerMutation,
   useRemoveFollowerMutation,
+  useUserInfoQuery,
 } from "@/src/redux/Users/userManagementApi";
 import { TRecipe } from "@/src/types/recipe";
 import { TRecipeComment } from "@/src/types/recipeComment";
 import RecipeDetailsSkeleton from "../Skelton/RecipeDetailsSkeleton";
+import { handleNavigate } from "@/src/utils/handleRecipeNavigate";
 
 const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
   const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
@@ -66,6 +68,7 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
   const [addVote] = useAddVoteInRecipeMutation();
   const [deleteComment] = useDeleteCommentMutation();
   const [commentLoading, setCommentLoading] = useState(false);
+  const { data: userData } = useUserInfoQuery(userInfo.email, { skip: !userInfo?.email })
 
   useEffect(() => {
     if (userToken) {
@@ -284,12 +287,12 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
     }
   };
 
+  const handleRecipeNavigate = (recipe: TRecipe) => {
+    handleNavigate(recipe, userData?.data, router)
+  }
+
   if (isLoading) {
-<<<<<<< HEAD
     return <RecipeDetailsSkeleton />
-=======
-    return <RecipeDetailsSkeleton />;
->>>>>>> e40d43c049dfde908a3a53c9e5fdac1f4f6c7e3f
   }
 
   return (
@@ -395,8 +398,8 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
                     <button
                       key={index}
                       className={`flex items-center gap-2 p-2 border rounded-lg text-sm cursor-pointer ${selectedIngredients.includes(ingredient)
-                          ? "bg-green-100 text-green-800 border-green-300"
-                          : "bg-white text-gray-600 border-gray-300"
+                        ? "bg-green-100 text-green-800 border-green-300"
+                        : "bg-white text-gray-600 border-gray-300"
                         }`}
                       onClick={() => toggleIngredient(ingredient)}
                     >
@@ -477,8 +480,8 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
           </div>
           <Divider />
           <div className="flex flex-col-reverse md:flex-row lg:flex-row justify-center items-center flex-wrap gap-4 mt-3">
-            <div className="flex gap-x-2">
-              <div className="flex gap-x-2 items-center border px-2 py-3 rounded-md">
+            <div className="flex gap-x-2 items-center">
+              <div className="flex gap-x-2 items-center border p-1 rounded-md">
                 <BiUpArrow
                   className={`text-[30px] cursor-pointer rounded-lg hover:text-black text-black/70 ${userInfo.id && data.data.upVote.includes(userInfo.id) ? "bg-[#1BEEA2]" : "bg-[#1BEEA2]/20"} hover:bg-[#1BEEA2] px-2 py-1 transition-all`}
                   onClick={() =>
@@ -487,7 +490,7 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
                 />
                 <p className="text-lg font-medium">{data.data.upVote.length}</p>
               </div>
-              <div className="flex gap-x-2 items-center border px-2 py-3 rounded-md">
+              <div className="flex gap-x-2 items-center border p-1 rounded-md">
                 <BiDownArrow
                   className={`text-[30px] cursor-pointer rounded-lg hover:text-black text-black/70 ${userInfo.id && data.data.downVote.includes(userInfo.id) ? "bg-red-400" : "bg-red-100"} hover:bg-red-400 px-2 py-1 transition-all`}
                   onClick={() =>
@@ -501,7 +504,7 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
               <div className="block md:hidden lg:hidden">
                 <Button
                   className="bg-[#1BEEA2]"
-                  size="lg"
+                  size="sm"
                   onClick={() =>
                     handleShare({
                       description: data.data.description,
@@ -510,7 +513,7 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
                     })
                   }
                 >
-                  <PiShareFatThin className="text-3xl" />
+                  <PiShareFatThin className="text-xl" />
                 </Button>
               </div>
             </div>
@@ -518,7 +521,7 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
               <form onSubmit={handleComment}>
                 <input
                   required
-                  className=" px-2 py-3 border-2 rounded-md focus:outline-[#1BEEA2] "
+                  className=" px-2 py-1 border-2 rounded-md focus:outline-[#1BEEA2] "
                   name="comment"
                   placeholder="type your comment"
                   type="text"
@@ -526,9 +529,10 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
                   onChange={handleCommentValue}
                 />
                 <Button
-                  className="bg-[#1BEEA2] h-12 ml-3 font-medium"
+                  className="bg-[#1BEEA2] ml-3 font-medium"
                   isLoading={commentLoading}
                   type="submit"
+                  size="sm"
                 >
                   Submit
                 </Button>
@@ -537,7 +541,7 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
             <div className="hidden md:block lg:block">
               <Button
                 className="bg-[#1BEEA2]"
-                size="lg"
+                size="sm"
                 onClick={() =>
                   handleShare({
                     description: data.data.description,
@@ -546,7 +550,7 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
                   })
                 }
               >
-                <PiShareFatThin className="text-3xl" />
+                <PiShareFatThin className="text-xl" />
               </Button>
             </div>
           </div>
@@ -615,18 +619,30 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
             {category?.data?.map(
               (recipe: TRecipe) =>
                 recipe._id !== data.data._id && (
-                  <Link
+                  <div
                     key={recipe._id}
+                    role="button"
                     className="flex mb-2 justify-start lg:justify-between items-center gap-x-2 border p-1 rounded-lg"
-                    href={`/recipeDetails/${recipe._id}`}
+                    onClick={() => handleRecipeNavigate(recipe)}
                   >
-                    <Image
-                      alt=""
-                      className="w-36 h-24 object-cover rounded-lg"
-                      height={100}
-                      src={recipe.image}
-                      width={100}
-                    />
+                    <div className="relative ">
+                      <Image
+                        alt=""
+                        className="w-60 h-24 object-cover rounded-lg"
+                        height={100}
+                        src={recipe.image}
+                        width={100}
+                      />
+                      {recipe.premiumStatus && (
+                        <span className="absolute top-1 left-1 text-xs font-semibold px-1 py-1 rounded-full shadow-md">
+                          <img
+                            alt=""
+                            className="w-5 h-5"
+                            src="https://res.cloudinary.com/depy0i4bl/image/upload/v1734539867/crown_bqhoe1.png"
+                          />
+                        </span>
+                      )}
+                    </div>
                     <div>
                       <p className="text-lg font-medium">
                         {recipe.title.slice(0, 18)} ...
@@ -642,7 +658,7 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
                         <p className="text-xs"> {recipe.cookingTime} Minute</p>
                       </div>
                     </div>
-                  </Link>
+                  </div>
                 ),
             )}
           </div>

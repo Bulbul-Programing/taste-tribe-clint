@@ -15,6 +15,17 @@ import 'swiper/css/pagination';
 // import required modules
 import { Pagination, FreeMode } from 'swiper/modules';
 import { Button } from '@nextui-org/react';
+import NoDataFound from './NoDataFound';
+import RecipeCardSkeleton from '../Skelton/RecipeCardSkeleton';
+import { useAppDispatch, useAppSelector } from '@/src/redux/hooks';
+import { logout, useCurrentToken } from '@/src/redux/features/Auth/authSlice';
+import { TDecodedUser } from '@/src/types/decodedUser';
+import { redirect, useRouter } from 'next/navigation';
+import { verifyToken } from '@/src/utils/veryfyToken';
+import { TRecipe } from '@/src/types/recipe';
+import Membership from '@/src/app/user/memberships/page';
+import { handleNavigate } from '@/src/utils/handleRecipeNavigate';
+import { useUserInfoQuery } from '@/src/redux/Users/userManagementApi';
 
 export type TFilter = {
     searchTerm?: string;
@@ -33,8 +44,6 @@ type TDebounceValue = {
 
 const AllRecipe = () => {
     const [selectCategory, setSelectCategory] = useState('')
-    const [modalLoading, setModalLoading] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemPerPage, setItemPerPage] = useState(20);
     const [searchValue, setSearchValue] = useState<TDebounceValue>({});
@@ -42,7 +51,27 @@ const AllRecipe = () => {
     const [sortFelid, setSortFelid] = useState<TFilter>({ limit: itemPerPage, page: currentPage, sort: "-createdAt" })
     const { data, isLoading } = useGetAllRecipesQuery(sortFelid)
     const [isOpen, setIsOpen] = useState(false)
-    console.log(data);
+
+    const userToken = useAppSelector(useCurrentToken);
+    const dispatch = useAppDispatch();
+    const [userDecodedInfo, setUserDecodedInfo] = useState<TDecodedUser | any>({});
+    const { data: userData } = useUserInfoQuery(userDecodedInfo.email, { skip: !userDecodedInfo?.email })
+    const router = useRouter()
+
+    useEffect(() => {
+        if (userToken) {
+            const decodedToken = verifyToken(userToken) as TDecodedUser;
+
+            if (decodedToken) {
+                setUserDecodedInfo(decodedToken);
+            } else {
+                dispatch(logout());
+            }
+        } else {
+            setUserDecodedInfo({});
+        }
+    }, [userToken]);
+
     const numberOfPage = Math.ceil(Number(data?.data.length) / itemPerPage);
     // const pages = [...Array(numberOfPage).keys()];
 
@@ -66,7 +95,7 @@ const AllRecipe = () => {
     // };
 
     useEffect(() => {
-        if (debounceValue.searchTerm) {
+        if (debounceValue?.searchTerm) {
             setSortFelid({ ...sortFelid, searchTerm: debounceValue?.searchTerm })
         }
         else {
@@ -94,7 +123,10 @@ const AllRecipe = () => {
         setSelectCategory(category)
         setSortFelid({ ...sortFelid, category: category })
     }
-
+    const handleRecipeNavigate = (recipeData: TRecipe) => {
+        handleNavigate(recipeData, userData?.data, router)
+    }
+    console.log(userData);
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-3xl font-bold ">All Recipes</h1>
@@ -119,7 +151,7 @@ const AllRecipe = () => {
                         </div>
                     )}
                 </div>
-                <Button onClick={() => setSortFelid({ limit: itemPerPage, page: currentPage, sort: "-createdAt" })} className='bg-red-400'>Clear Filter</Button>
+                <Button onClick={() => (setSortFelid({ limit: itemPerPage, page: currentPage, sort: "-createdAt" }), setSelectCategory(''))} className='bg-red-400'>Clear Filter</Button>
             </div>
             <div className='mb-3'>
                 <p className='text-lg font-semibold my-2'>Categories :</p>
@@ -149,12 +181,52 @@ const AllRecipe = () => {
                     }
                 </div> */}
             </div>
-            {/* Recipe Cards */}
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {data?.data?.map((recipe: any) => (
-                    <RecipeCard key={recipe._id} recipe={recipe} />
-                ))}
-            </div>
+            {
+                data?.data?.length < 1 ? <NoDataFound /> :
+                    isLoading || loading ? <RecipeCardSkeleton /> :
+                        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                            {data?.data?.map((recipe: any) => (
+                                <div role='button' onClick={() => handleRecipeNavigate(recipe)} key={recipe._id} className="relative hover:border-[#1BEEA2] transition-all border border-gray-200 rounded-lg shadow-md overflow-hidden group transform  hover:shadow-xl">
+                                    {/* Recipe Image */}
+                                    <div className="h-48 overflow-hidden relative">
+                                        <img
+                                            alt={recipe.title}
+                                            className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
+                                            src={recipe.image}
+                                        />
+                                        {/* Overlay */}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-70 transition-opacity" />
+                                    </div>
+
+                                    {/* Recipe Details */}
+                                    <div className="p-4 transition-all duration-300">
+                                        <h2 className="text-lg font-semibold  transition-colors">
+                                            {recipe.title}
+                                        </h2>
+                                        <p className="text-sm text-gray-600 capitalize mt-2">
+                                            {recipe.category}
+                                        </p>
+                                        <p className="text-sm mt-1 ">{recipe.cookingTime} mins</p>
+
+                                        {/* Floating Badge */}
+                                        <span className="absolute top-2 right-2 bg-[#1BEEA2] text-xs font-semibold px-2 py-1 rounded-full shadow-md">
+                                            {recipe.upVote.length} Up votes
+                                        </span>
+                                        {recipe.premiumStatus && (
+                                            <span className="absolute top-1 left-1 text-xs font-semibold px-1 py-1 rounded-full shadow-md">
+                                                <img
+                                                    alt=""
+                                                    className="w-5 h-5"
+                                                    src="https://res.cloudinary.com/depy0i4bl/image/upload/v1734539867/crown_bqhoe1.png"
+                                                />
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+            }
 
             {/* Infinite Scroll
             {hasMore && (

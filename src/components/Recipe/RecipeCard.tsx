@@ -1,27 +1,37 @@
-import Link from 'next/link';
-import React from 'react';
+import React, { useEffect, useState } from "react";
+
+import { logout, useCurrentToken } from "@/src/redux/features/Auth/authSlice";
+import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
+import { TDecodedUser } from "@/src/types/decodedUser";
+import { verifyToken } from "@/src/utils/veryfyToken";
+import { useRouter } from "next/navigation";
 
 interface RecipeCardProps {
     recipe: any;
 }
 
 const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
-    ;
+    
+
+    const handleNavigate = () => {
+       
+    };
 
     return (
-        <Link
+        <div
+            role="button"
             className="relative hover:border-[#1BEEA2] transition-all border border-gray-200 rounded-lg shadow-md overflow-hidden group transform  hover:shadow-xl"
-            href={`/recipeDetails/${recipe._id}`}
+            onClick={() => handleNavigate}
         >
             {/* Recipe Image */}
             <div className="h-48 overflow-hidden relative">
                 <img
-                    src={recipe.image}
                     alt={recipe.title}
                     className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
+                    src={recipe.image}
                 />
                 {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-70 transition-opacity"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-70 transition-opacity" />
             </div>
 
             {/* Recipe Details */}
@@ -38,8 +48,17 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
                 <span className="absolute top-2 right-2 bg-[#1BEEA2] text-xs font-semibold px-2 py-1 rounded-full shadow-md">
                     {recipe.upVote.length} Up votes
                 </span>
+                {recipe.premiumStatus && (
+                    <span className="absolute top-1 left-1 text-xs font-semibold px-1 py-1 rounded-full shadow-md">
+                        <img
+                            alt=""
+                            className="w-5 h-5"
+                            src="https://res.cloudinary.com/depy0i4bl/image/upload/v1734539867/crown_bqhoe1.png"
+                        />
+                    </span>
+                )}
             </div>
-        </Link>
+        </div>
     );
 };
 

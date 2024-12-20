@@ -144,7 +144,7 @@ const NavbarDropdown = () => {
       ) : (
         <Link
           className="px-4 py-2 rounded-md bg-[#1BEEA2] text-black font-medium"
-          href="/login"
+          href="/login?redirect=recipeDetails/6740d628394af402d4552fe0"
         >
           Log In
         </Link>
