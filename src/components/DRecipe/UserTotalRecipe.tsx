@@ -6,7 +6,7 @@ const UserTotalRecipe = () => {
   const { data, isLoading } = useCountUserAllRecipesQuery(undefined);
 
   if (isLoading) {
-    return <Skeleton className="w-2 h-2" />;
+    return 0;
   }
 
   return <span className="text-2xl">{data?.data ? data?.data : 0}</span>;

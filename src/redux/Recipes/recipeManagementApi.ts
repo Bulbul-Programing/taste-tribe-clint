@@ -33,10 +33,23 @@ const recipeApi = baseApi.injectEndpoints({
       providesTags: ["recipeDetails"],
     }),
     userAllRecipes: builder.query({
-      query: () => ({
-        url: "/recipe/user",
-        method: "GET",
-      }),
+      query: (args) => {
+        const param = new URLSearchParams();
+
+        if (args) {
+          const key = Object.keys(args);
+          const value = Object.values(args);
+
+          for (let index = 0; index < key.length; index++) {
+            param.append(key[index], value[index] as string);
+          }
+        }
+        return {
+          url: "/recipe/user",
+          method: "GET",
+          params: param,
+        }
+      },
       providesTags: ["recipe"],
     }),
     countUserAllRecipes: builder.query({

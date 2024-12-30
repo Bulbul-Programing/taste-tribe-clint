@@ -38,7 +38,7 @@ export type TFilter = {
     fields?: string;
     debounceValue?: { searchTerm?: string }
 }
-type TDebounceValue = {
+export type TDebounceValue = {
     searchTerm?: string
 }
 
