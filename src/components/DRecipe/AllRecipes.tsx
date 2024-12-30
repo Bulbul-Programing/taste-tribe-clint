@@ -78,7 +78,7 @@ const AllRecipes = () => {
   const [deleteRecipe] = useDeleteRecipeMutation();
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemPerPage, setItemPerPage] = useState(2);
+  const [itemPerPage, setItemPerPage] = useState(10);
   const [isOpen, setIsOpen] = useState(false)
   const [sortFelid, setSortFelid] = useState<TFilter>({ limit: itemPerPage, page: currentPage, sort: "-createdAt" })
   const { data, isLoading } = useUserAllRecipesQuery(sortFelid);

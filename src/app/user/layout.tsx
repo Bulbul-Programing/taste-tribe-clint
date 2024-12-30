@@ -31,7 +31,6 @@ const UserDashboardLayout = ({ children }: { children: ReactNode }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const currentPage = usePathname();
-
   useEffect(() => {
     if (userToken) {
       const decodedToken = verifyToken(userToken);
@@ -149,7 +148,7 @@ const UserDashboardLayout = ({ children }: { children: ReactNode }) => {
             <img
               alt=""
               className={` rounded-full transition-all ease-in ${isExpanded ? "w-20 h-20" : "w-10 h-10"}`}
-              src={userInfo?.profilePicture}
+              src={data?.data?.profilePicture}
             />
           </div>
           <h1
