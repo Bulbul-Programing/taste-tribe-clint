@@ -128,6 +128,23 @@ const userManagementApi = baseApi.injectEndpoints({
       },
       invalidatesTags: ["user"],
     }),
+    getAllFollowers: builder.query({
+      query: () => {
+        return {
+          url: "/user/followers",
+          method: "GET",
+        };
+      }
+    }),
+    getAllFollowing: builder.query({
+      query: () => {
+        return {
+          url: "/user/following",
+          method: "GET",
+        };
+      },
+      providesTags: ['user']
+    })
   }),
 });
 
@@ -144,4 +161,6 @@ export const {
   useUpdateUserStatusMutation,
   useAddFollowerMutation,
   useRemoveFollowerMutation,
+  useGetAllFollowersQuery,
+  useGetAllFollowingQuery
 } = userManagementApi;

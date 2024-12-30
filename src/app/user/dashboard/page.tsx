@@ -55,7 +55,7 @@ const UserDashboard = () => {
       <div className="grid grid-cols-4 gap-x-5 my-7">
         <div
           className="bg-slate-100 cursor-pointer flex items-center justify-between p-3 rounded-md"
-          onClick={() => handleRoute(`/${userInfo.role}/follower`)}
+          onClick={() => handleRoute(`/${userInfo.role}/followers`)}
         >
           <div>
             <p className="text-slate-600 text-sm font-medium">Your total </p>

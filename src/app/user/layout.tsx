@@ -113,7 +113,7 @@ const UserDashboardLayout = ({ children }: { children: ReactNode }) => {
   ];
 
   return (
-    <div className="container mx-auto max-w-7xl flex-grow">
+    <div className="flex max-w-7xl mx-auto">
       <div>
         <div
           className=" block md:block lg:hidden"
@@ -132,7 +132,7 @@ const UserDashboardLayout = ({ children }: { children: ReactNode }) => {
         )}
 
         <div
-          className={`absolute top-0 left-0 h-screen lg:block bg-[#f1f2f7] text-black transition-all duration-300 ease-in-out transform ${
+          className={` h-screen lg:block bg-[#f1f2f7] text-black transition-all duration-300 ease-in-out transform ${
             isExpanded ? "w-48 block" : "w-16 hidden"
           } ${
             isDrawerOpen
@@ -143,7 +143,7 @@ const UserDashboardLayout = ({ children }: { children: ReactNode }) => {
           onMouseLeave={handleMouseLeave}
         >
           <div
-            className={` flex justify-center items-center mt-5  transition-all duration-300 ease-in-out transform`}
+            className={` flex justify-center items-center pt-5  transition-all duration-300 ease-in-out transform`}
           >
             <img
               alt=""
@@ -156,7 +156,7 @@ const UserDashboardLayout = ({ children }: { children: ReactNode }) => {
           >
             {data?.data?.name}
           </h1>
-          <div className="mt-4 space-y-2">
+          <div className="mt-4 space-y-2 transition-all duration-300 ease-in-out">
             {dashboardNavItem.map((item, index) => (
               <Link
                 key={index}
@@ -170,7 +170,7 @@ const UserDashboardLayout = ({ children }: { children: ReactNode }) => {
                 >
                   {item.icon}
                 </div>
-                <p className={` mt-1 ${isExpanded ? "block" : "hidden"}`}>
+                <p className={` mt-1 ${isExpanded ? "text-base mt-2" : "text-[0px] mt-0"} transition-all duration-200 ease-in-out`}>
                   {item.element}
                 </p>
               </Link>
@@ -178,7 +178,7 @@ const UserDashboardLayout = ({ children }: { children: ReactNode }) => {
           </div>
         </div>
       </div>
-      <div className=" m-3 lg:ml-20">{children}</div>
+      <div className="w-full lg:ml-5 max-w-7xl mx-auto">{children}</div>
     </div>
   );
 };
