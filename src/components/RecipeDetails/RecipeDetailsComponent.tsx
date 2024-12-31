@@ -69,7 +69,7 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
   const [deleteComment] = useDeleteCommentMutation();
   const [commentLoading, setCommentLoading] = useState(false);
   const { data: userData } = useUserInfoQuery(userInfo.email, { skip: !userInfo?.email })
-
+  console.log(data);
   useEffect(() => {
     if (userToken) {
       const decodedToken = verifyToken(userToken);
@@ -81,6 +81,15 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
       setUserInfo({});
     }
   }, [userToken]);
+
+  useEffect(() => {
+    if (data?.data?.premiumStatus) {
+      if (!userData) {
+        router.push('/login')
+      }
+      handleNavigate(data?.data, userData?.data, router)
+    }
+  })
 
   const toggleIngredient = (ingredient: string) => {
     setSelectedIngredients((prev) =>

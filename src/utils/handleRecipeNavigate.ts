@@ -8,7 +8,6 @@ export const handleNavigate = (
     userInfo: TDecodedUser | null,
     router: AppRouterInstance
 ) => {
-    console.log(userInfo);
     if (data.premiumStatus === false) {
         return router.push(`/recipeDetails/${data._id}`);
     }
@@ -17,7 +16,7 @@ export const handleNavigate = (
         if (!userInfo?.email) {
             return router.push(`/login?redirect=recipes`);
         }
-        console.log(userInfo);
+        
         if (userInfo?.premiumStatus === false) {
             return router.push(`/user/memberships?redirect=recipeDetails/${data._id}`);
         }

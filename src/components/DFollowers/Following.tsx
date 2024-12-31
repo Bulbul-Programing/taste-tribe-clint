@@ -9,9 +9,10 @@ import { Button } from '@nextui-org/button';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import FollowingSkeleton from '../Skelton/FollowingSkeleton';
 
 const Following = () => {
-    const { data } = useGetAllFollowingQuery(undefined)
+    const { data, isLoading } = useGetAllFollowingQuery(undefined)
     const userToken = useAppSelector(useCurrentToken);
     const [decodedUser, setDecodedUser] = useState<TDecodedUser | any>({});
     const dispatch = useAppDispatch()
@@ -57,8 +58,13 @@ const Following = () => {
             setLoading(false);
         }
     };
+
+    if (isLoading) {
+        return <FollowingSkeleton />
+    }
+
     return (
-        <div className="flex gap-x-3 my-3">
+        <div className="flex gap-x-3 my-3 flex-wrap">
             {
                 data?.data?.length > 0 ? data?.data?.map((user: TUser) => (
                     <div key={user._id} className="flex flex-wrap border p-2 gap-x-3 items-center rounded transition-all hover:bg-slate-100">

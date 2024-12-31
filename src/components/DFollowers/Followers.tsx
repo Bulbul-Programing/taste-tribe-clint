@@ -2,15 +2,18 @@
 import { useGetAllFollowersQuery } from "@/src/redux/Users/userManagementApi";
 import { TUser } from "@/src/types/decodedUser";
 import { FiEdit, FiTrash } from "react-icons/fi";
+import FollowerSkeleton from "../Skelton/FollowerSkeleton";
 
 const DFollowers = () => {
-    const { data } = useGetAllFollowersQuery(undefined)
-    console.log(data);
+    const { data, isLoading } = useGetAllFollowersQuery(undefined)
+    if (isLoading) {
+        return <FollowerSkeleton />
+    }
     return (
-        <div className="flex gap-x-3">
+        <div className="flex gap-x-3 flex-wrap">
             {
                 data?.data?.length > 0 ? data?.data?.map((user: TUser) => (
-                    <div className="flex flex-wrap border p-2 gap-x-3 items-center rounded transition-all hover:bg-slate-100">
+                    <div key={user._id} className="flex flex-wrap border p-2 gap-x-3 items-center rounded transition-all hover:bg-slate-100">
                         <img
                             alt={user.name}
                             className="w-14 h-14 object-cover rounded-full border shadow-md"

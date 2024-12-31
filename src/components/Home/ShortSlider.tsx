@@ -8,12 +8,44 @@ import ShortSliderSkeleton from "../Skelton/ShortSliderSkeleton";
 
 import { useGetAllRecipesQuery } from "@/src/redux/Recipes/recipeManagementApi";
 import { TRecipe } from "@/src/types/recipe";
+import { handleNavigate } from "@/src/utils/handleRecipeNavigate";
+import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
+import { logout, useCurrentToken } from "@/src/redux/features/Auth/authSlice";
+import { useEffect, useState } from "react";
+import { TDecodedUser } from "@/src/types/decodedUser";
+import { useUserInfoQuery } from "@/src/redux/Users/userManagementApi";
+import { useRouter } from "next/navigation";
+import { verifyToken } from "@/src/utils/veryfyToken";
 
 const ShortSlider = () => {
   const { data, isLoading } = useGetAllRecipesQuery({
     sort: "cookingTime",
     limit: 8,
   });
+  const userToken = useAppSelector(useCurrentToken);
+  const dispatch = useAppDispatch();
+  const [userDecodedInfo, setUserDecodedInfo] = useState<TDecodedUser | any>({});
+  const { data: userData } = useUserInfoQuery(userDecodedInfo.email, { skip: !userDecodedInfo?.email })
+  const router = useRouter()
+
+  useEffect(() => {
+    if (userToken) {
+      const decodedToken = verifyToken(userToken) as TDecodedUser;
+
+      if (decodedToken) {
+        setUserDecodedInfo(decodedToken);
+      } else {
+        dispatch(logout());
+      }
+    } else {
+      setUserDecodedInfo({});
+    }
+  }, [userToken]);
+
+  const handleRecipeNavigate = (recipeData: TRecipe) => {
+    handleNavigate(recipeData, userData?.data, router)
+  }
+
 
   if (isLoading) {
     return <ShortSliderSkeleton />;
@@ -55,12 +87,12 @@ const ShortSlider = () => {
                         <IoTimerOutline className="text-base font-bold" />
                         <p className="text-xs"> {recipe.cookingTime} Minute</p>
                       </div>
-                      <Link
-                        className="bg-[#1BEEA2] hover:bg-[#13ce8a] px-5 py-3 rounded-lg font-medium cursor-pointer rotate-90 transition-all delay-75"
-                        href={`/recipeDetails/${recipe._id}`}
+                      <button
+                        className="bg-[#1BEEA2] hover:bg-[#13ce8a] px-5 py-3 rounded-lg font-medium cursor-pointer transition-all delay-75"
+                        onClick={() => handleRecipeNavigate(recipe)}
                       >
                         View Details
-                      </Link>
+                      </button>
                     </div>
                     <Image
                       alt=""
