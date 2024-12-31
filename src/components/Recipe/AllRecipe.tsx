@@ -45,7 +45,7 @@ export type TDebounceValue = {
 const AllRecipe = () => {
     const [selectCategory, setSelectCategory] = useState('')
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemPerPage, setItemPerPage] = useState(20);
+    const [itemPerPage, setItemPerPage] = useState(5);
     const [searchValue, setSearchValue] = useState<TDebounceValue>({});
     const { debounceValue, loading } = useDebounce(searchValue);
     const [sortFelid, setSortFelid] = useState<TFilter>({ limit: itemPerPage, page: currentPage, sort: "-createdAt" })
@@ -72,28 +72,6 @@ const AllRecipe = () => {
         }
     }, [userToken]);
 
-    const numberOfPage = Math.ceil(Number(data?.data.length) / itemPerPage);
-    // const pages = [...Array(numberOfPage).keys()];
-
-    // const handleMinMax = (e: any) => {
-    //     e.preventDefault();
-    //     const minValue = e.currentTarget.minimum.value;
-    //     const maxValue = e.currentTarget.maximum.value;
-
-    //     if (!minValue || !maxValue) {
-    //         return toast.error("Please Set Price Value");
-    //     }
-    //     if (Number(maxValue) <= Number(minValue)) {
-    //         return toast.error("Please provide grater then value form minimum value");
-    //     }
-    //     setSortFelid({
-    //         ...sortFelid,
-    //         minValue: minValue,
-    //         maxValue: maxValue,
-    //     });
-    //     setCurrentPage(1);
-    // };
-
     useEffect(() => {
         if (debounceValue?.searchTerm) {
             setSortFelid({ ...sortFelid, searchTerm: debounceValue?.searchTerm })
@@ -102,6 +80,24 @@ const AllRecipe = () => {
             setSortFelid({ limit: itemPerPage, page: currentPage, sort: "-createdAt" })
         }
     }, [loading])
+    // handle infinity scroll
+    let scrollCurrentPage = Math.ceil(data?.data?.length / itemPerPage) + 1;
+
+    const handleScroll = () => {
+        // console.log(document.documentElement.scrollTop, window.innerHeight , document.documentElement.offsetHeight);
+        if (
+            window.innerHeight + document.documentElement.scrollTop >=
+            document.documentElement.offsetHeight - 100 &&
+            !isLoading
+        ) {
+            setSortFelid({ ...sortFelid, limit: itemPerPage, page: scrollCurrentPage })
+        }
+    }
+    console.log(data?.data);
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [isLoading, currentPage]);
 
     const handleSearch = (e: React.FormEvent<HTMLInputElement>) => {
         if (e.currentTarget.value.length > 0) {
@@ -126,7 +122,7 @@ const AllRecipe = () => {
     const handleRecipeNavigate = (recipeData: TRecipe) => {
         handleNavigate(recipeData, userData?.data, router)
     }
-    
+
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-3xl font-bold ">All Recipes</h1>
@@ -151,7 +147,7 @@ const AllRecipe = () => {
                         </div>
                     )}
                 </div>
-                <Button onClick={() => (setSortFelid({ limit: itemPerPage, page: currentPage, sort: "-createdAt" }), setSelectCategory(''))} className='bg-red-400'>Clear Filter</Button>
+                <Button onClick={() => (setSortFelid({ limit: itemPerPage, page: scrollCurrentPage, sort: "-createdAt" }), setSelectCategory(''))} className='bg-red-400'>Clear Filter</Button>
             </div>
             <div className='mb-3'>
                 <p className='text-lg font-semibold my-2'>Categories :</p>

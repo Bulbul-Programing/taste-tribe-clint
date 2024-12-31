@@ -69,7 +69,7 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
   const [deleteComment] = useDeleteCommentMutation();
   const [commentLoading, setCommentLoading] = useState(false);
   const { data: userData } = useUserInfoQuery(userInfo.email, { skip: !userInfo?.email })
-  console.log(data);
+  const [validationLoading, setValidationLoading] = useState(false)
   useEffect(() => {
     if (userToken) {
       const decodedToken = verifyToken(userToken);
@@ -83,12 +83,14 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
   }, [userToken]);
 
   useEffect(() => {
+    setValidationLoading(true)
     if (data?.data?.premiumStatus) {
       if (!userData) {
         router.push('/login')
       }
       handleNavigate(data?.data, userData?.data, router)
     }
+    setValidationLoading(false)
   })
 
   const toggleIngredient = (ingredient: string) => {
@@ -300,7 +302,7 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
     handleNavigate(recipe, userData?.data, router)
   }
 
-  if (isLoading) {
+  if (isLoading || validationLoading) {
     return <RecipeDetailsSkeleton />
   }
 
