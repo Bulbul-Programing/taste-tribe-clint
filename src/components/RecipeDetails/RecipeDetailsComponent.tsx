@@ -27,6 +27,8 @@ import {
   useGetAllRecipesQuery,
   useGetRecipeCommentsQuery,
   useGetRecipeDetailsQuery,
+  useRecipeAverageRatingQuery,
+  useThisUserRatingThisRecipeQuery,
 } from "@/src/redux/Recipes/recipeManagementApi";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import { logout, useCurrentToken } from "@/src/redux/features/Auth/authSlice";
@@ -70,13 +72,27 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
   const [addVote] = useAddVoteInRecipeMutation();
   const [deleteComment] = useDeleteCommentMutation();
   const [commentLoading, setCommentLoading] = useState(false);
-  const { data: userData } = useUserInfoQuery(userInfo.email, {
+  const { data: userData } = useUserInfoQuery(userInfo?.email, {
     skip: !userInfo?.email,
   });
   const [validationLoading, setValidationLoading] = useState(false);
+  const [addRating] = useAddRecipeRatingMutation();
+  const { data: recipeAverageRating } = useRecipeAverageRatingQuery(recipeId, {
+    skip: !recipeId,
+  });
+  const { data: userRatingThisRecipe, isLoading: recipeRatingUserLoading } =
+    useThisUserRatingThisRecipeQuery(
+      { userId: userInfo?.id, recipeId: recipeId },
+      { skip: !recipeId || !userInfo.id },
+    );
   const [submitRating, setSubmitRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
-  const [addRating] = useAddRecipeRatingMutation()
+
+  useEffect(() => {
+    if (userRatingThisRecipe?.data) {
+      setSubmitRating(userRatingThisRecipe?.data.rating);
+    }
+  }, [recipeRatingUserLoading]);
 
   useEffect(() => {
     if (userToken) {
@@ -311,35 +327,36 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
   const handleSubmitRating = async (rating: number) => {
     if (!userInfo.email) {
       dispatch(logout());
+
       return router.push("/login");
     }
-    setSubmitRating(rating)
+    setSubmitRating(rating);
     const ratingData = {
       recipeId: recipeId,
       userId: userInfo.id,
-      rating: rating
-    }
+      rating: rating,
+    };
+
     try {
-      const res = await addRating(ratingData) as any
-      console.log(res);
+      const res = (await addRating(ratingData)) as any;
+
       if (res.data) {
-        toast.success(res?.data?.massage)
+        toast.success(res?.data?.massage);
       }
       if (res.error) {
-        toast.error(res.error.data.message || 'something went wrong!')
+        toast.error(res.error.data.message || "something went wrong!");
       }
+    } catch (err: any) {
+      toast.error(err?.message || "something went wrong!");
     }
-    catch (err) {
-      toast.error(err?.message || 'something went wrong!')
-    }
-  }
+  };
 
   if (isLoading || validationLoading) {
     return <RecipeDetailsSkeleton />;
   }
 
   return (
-    <div className="mx-5 md:mx-5 lg:mx-20 my-5 md:my-8 lg:my-10">
+    <div className="mx-3 md:mx-5 lg:mx-20 my-3 md:my-8 lg:my-10">
       <div className="flex flex-col md:flex-row lg:flex-row gap-y-3 gap-x-3 lg:space-x-7 lg:gap-0 justify-center items-center">
         <div className="mx-5 md:mx-0 lg:mx-0 w-full md:w-1/2 lg:w-5/12">
           <Image
@@ -440,10 +457,11 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
                   (ingredient: string, index: number) => (
                     <button
                       key={index}
-                      className={`flex items-center gap-2 p-2 border rounded-lg text-sm cursor-pointer ${selectedIngredients.includes(ingredient)
-                        ? "bg-green-100 text-green-800 border-green-300"
-                        : "bg-white text-gray-600 border-gray-300"
-                        }`}
+                      className={`flex items-center gap-2 p-2 border rounded-lg text-sm cursor-pointer ${
+                        selectedIngredients.includes(ingredient)
+                          ? "bg-green-100 text-green-800 border-green-300"
+                          : "bg-white text-gray-600 border-gray-300"
+                      }`}
                       onClick={() => toggleIngredient(ingredient)}
                     >
                       <ImSpoonKnife className="text-xl text-[#1BEEA2]" />
@@ -486,7 +504,7 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
                               Remaining:{" "}
                               {formatTime(
                                 timers[instruction._id] ??
-                                instruction.time * 60,
+                                  instruction.time * 60,
                               )}
                             </span>
                           </div>
@@ -503,13 +521,13 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
                             className="bg-[#1BEEA2] px-3 py-1 rounded"
                             onClick={() =>
                               timers[instruction._id] !== undefined &&
-                                intervals[instruction._id]
+                              intervals[instruction._id]
                                 ? pauseTimer(instruction._id)
                                 : startTimer(instruction._id, instruction.time)
                             }
                           >
                             {timers[instruction._id] !== undefined &&
-                              intervals[instruction._id]
+                            intervals[instruction._id]
                               ? "Pause"
                               : "Start Timer"}
                           </button>
@@ -522,29 +540,41 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
             </div>
           </div>
           <Divider />
-          <div className="my-3 flex">
-            {Array.from({ length: 5 }).map((_, index) =>
-              index + 1 <= (hoverRating || submitRating) ? (
-                <div key={index}>
-                  <FaStar
-                    key={index}
-                    className={` text-[40px] transition-all text-[#1BEEA2]/70 p-1`}
-                    onClick={() => handleSubmitRating(index + 1)}
-                    onMouseEnter={() => setHoverRating(index + 1)}
-                    onMouseLeave={() => setHoverRating(0)}
-                  />
-                </div>
-              ) : (
-                <div key={index}>
-                  <FaRegStar
-                    key={index}
-                    className={` text-[40px] transition-all text-red-500/50 p-1`}
-                    onMouseEnter={() => setHoverRating(index + 1)}
-                    onMouseLeave={() => setHoverRating(0)}
-                  />
-                </div>
-              ),
-            )}
+          <div className="my-3 flex items-center justify-between">
+            <div className="flex">
+              {Array.from({ length: 5 }).map((_, index) =>
+                index + 1 <= (hoverRating || submitRating) ? (
+                  <div key={index}>
+                    <FaStar
+                      key={index}
+                      className={` text-[30px] md:text-[40px] lg:text-[40px] transition-all text-[#1BEEA2]/70 p-1`}
+                      onClick={() => handleSubmitRating(index + 1)}
+                      onMouseEnter={() => setHoverRating(index + 1)}
+                      onMouseLeave={() => setHoverRating(0)}
+                    />
+                  </div>
+                ) : (
+                  <div key={index}>
+                    <FaRegStar
+                      key={index}
+                      className={` text-[30px] md:text-[40px] lg:text-[40px] transition-all text-red-500/50 p-1`}
+                      onMouseEnter={() => setHoverRating(index + 1)}
+                      onMouseLeave={() => setHoverRating(0)}
+                    />
+                  </div>
+                ),
+              )}
+            </div>
+            <p className="ml-2 md:ml-4 lg:ml-4 text-base md:text-xl lg:text-xl font-medium">
+              Average Rating :{" "}
+              <span
+                className={`${Number(recipeAverageRating?.data[0]?.averageRating) > 2.9 ? "text-blue-500" : "text-red-500"} font-semibold text-base md:text-2xl lg:text-2xl`}
+              >
+                {recipeAverageRating?.data?.length > 0
+                  ? recipeAverageRating?.data[0]?.averageRating.toFixed(1)
+                  : 0}
+              </span>
+            </p>
           </div>
           <Divider />
           <div className="flex flex-col-reverse md:flex-row lg:flex-row justify-center items-center flex-wrap gap-4 mt-3">

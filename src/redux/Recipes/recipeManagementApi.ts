@@ -134,7 +134,25 @@ const recipeApi = baseApi.injectEndpoints({
           body: data,
         };
       },
-      invalidatesTags: ["recipeDetails", "recipe"],
+      invalidatesTags: ["recipeDetails", "recipe", "rating"],
+    }),
+    recipeAverageRating: builder.query({
+      query: (recipeId) => {
+        return {
+          url: `/rating/average/${recipeId}`,
+          method: "GET",
+        };
+      },
+      providesTags: ["rating"],
+    }),
+    thisUserRatingThisRecipe: builder.query({
+      query: (data) => {
+        return {
+          url: `/rating/${data.userId}/${data.recipeId}`,
+          method: "GET",
+        };
+      },
+      providesTags: ["rating"],
     }),
   }),
 });
@@ -151,5 +169,7 @@ export const {
   useGetRecipeCommentsQuery,
   useAddVoteInRecipeMutation,
   useDeleteCommentMutation,
-  useAddRecipeRatingMutation
+  useAddRecipeRatingMutation,
+  useRecipeAverageRatingQuery,
+  useThisUserRatingThisRecipeQuery,
 } = recipeApi;

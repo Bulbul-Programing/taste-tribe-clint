@@ -95,7 +95,6 @@ const AllRecipe = () => {
   let scrollCurrentPage = Math.ceil(data?.data?.length / itemPerPage) + 1;
 
   const handleScroll = () => {
-    // console.log(document.documentElement.scrollTop, window.innerHeight , document.documentElement.offsetHeight);
     if (
       window.innerHeight + document.documentElement.scrollTop >=
         document.documentElement.offsetHeight - 100 &&
@@ -109,7 +108,6 @@ const AllRecipe = () => {
     }
   };
 
-  console.log(data?.data);
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
 
