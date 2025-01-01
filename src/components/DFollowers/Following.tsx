@@ -36,7 +36,6 @@ const Following = () => {
     }, [userToken]);
 
     const handleUnFollow = async (followingId: string) => {
-        console.log(followingId);
         const followerData = {
             userId: decodedUser.id,
             followerId: followingId,

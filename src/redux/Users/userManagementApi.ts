@@ -144,6 +144,14 @@ const userManagementApi = baseApi.injectEndpoints({
         };
       },
       providesTags: ['user']
+    }),
+    getTopFiveFollower: builder.query({
+      query: () => {
+        return {
+          url: "/user/topFiveFollowers",
+          method: "GET"
+        }
+      }
     })
   }),
 });
@@ -162,5 +170,6 @@ export const {
   useAddFollowerMutation,
   useRemoveFollowerMutation,
   useGetAllFollowersQuery,
-  useGetAllFollowingQuery
+  useGetAllFollowingQuery,
+  useGetTopFiveFollowerQuery
 } = userManagementApi;

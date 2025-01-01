@@ -11,7 +11,6 @@ const Membership = () => {
 
   const [checkout] = useUpdateUserStatusMutation();
   const router = useRouter();
-  console.log(redirect);
   const handleCheckout = async (payableAmount: number) => {
     try {
       const checkoutParams = {

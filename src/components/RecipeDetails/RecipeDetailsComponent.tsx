@@ -267,8 +267,6 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
 
     try {
       const res = (await addVote(payload)) as any;
-
-      console.log(res);
       if (res?.data?.data?.matchedCount > 0) {
         toast.success("Vote updated successfully");
       }
@@ -284,8 +282,7 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
   const handelDeleteComment = async (id: string) => {
     try {
       const res = (await deleteComment(id)) as any;
-
-      console.log(res);
+      
       if (res?.data?.data?.deletedCount > 0) {
         toast.success("comment delete successfully");
       }
