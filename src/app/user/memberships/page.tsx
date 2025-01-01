@@ -7,7 +7,7 @@ import { useUpdateUserStatusMutation } from "@/src/redux/Users/userManagementApi
 
 const Membership = () => {
   const searchParams = useSearchParams();
-  const redirect = searchParams.get("redirect")
+  const redirect = searchParams.get("redirect");
 
   const [checkout] = useUpdateUserStatusMutation();
   const router = useRouter();
@@ -15,8 +15,8 @@ const Membership = () => {
     try {
       const checkoutParams = {
         payableAmount,
-        redirectUrl: redirect
-      }
+        redirectUrl: redirect,
+      };
       const res = await checkout(checkoutParams);
 
       if (res?.data?.url) {

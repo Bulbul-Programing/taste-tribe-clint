@@ -9,16 +9,19 @@ import React, { useEffect, useState } from "react";
 import { Divider } from "@nextui-org/divider";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import Link from "next/link";
 import { BiUpArrow } from "react-icons/bi";
 import { BiDownArrow } from "react-icons/bi";
 import { PiShareFatThin } from "react-icons/pi";
 import { AiOutlineDelete } from "react-icons/ai";
+import { FaRegStar } from "react-icons/fa";
+import { FaStar } from "react-icons/fa";
 
 import { handleShare } from "../shareButton";
+import RecipeDetailsSkeleton from "../Skelton/RecipeDetailsSkeleton";
 
 import {
   useAddCommentMutation,
+  useAddRecipeRatingMutation,
   useAddVoteInRecipeMutation,
   useDeleteCommentMutation,
   useGetAllRecipesQuery,
@@ -36,7 +39,6 @@ import {
 } from "@/src/redux/Users/userManagementApi";
 import { TRecipe } from "@/src/types/recipe";
 import { TRecipeComment } from "@/src/types/recipeComment";
-import RecipeDetailsSkeleton from "../Skelton/RecipeDetailsSkeleton";
 import { handleNavigate } from "@/src/utils/handleRecipeNavigate";
 
 const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
@@ -68,8 +70,14 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
   const [addVote] = useAddVoteInRecipeMutation();
   const [deleteComment] = useDeleteCommentMutation();
   const [commentLoading, setCommentLoading] = useState(false);
-  const { data: userData } = useUserInfoQuery(userInfo.email, { skip: !userInfo?.email })
-  const [validationLoading, setValidationLoading] = useState(false)
+  const { data: userData } = useUserInfoQuery(userInfo.email, {
+    skip: !userInfo?.email,
+  });
+  const [validationLoading, setValidationLoading] = useState(false);
+  const [submitRating, setSubmitRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [addRating] = useAddRecipeRatingMutation()
+
   useEffect(() => {
     if (userToken) {
       const decodedToken = verifyToken(userToken);
@@ -83,15 +91,15 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
   }, [userToken]);
 
   useEffect(() => {
-    setValidationLoading(true)
+    setValidationLoading(true);
     if (data?.data?.premiumStatus) {
       if (!userData) {
-        router.push('/login')
+        router.push("/login");
       }
-      handleNavigate(data?.data, userData?.data, router)
+      handleNavigate(data?.data, userData?.data, router);
     }
-    setValidationLoading(false)
-  })
+    setValidationLoading(false);
+  });
 
   const toggleIngredient = (ingredient: string) => {
     setSelectedIngredients((prev) =>
@@ -267,6 +275,7 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
 
     try {
       const res = (await addVote(payload)) as any;
+
       if (res?.data?.data?.matchedCount > 0) {
         toast.success("Vote updated successfully");
       }
@@ -282,7 +291,7 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
   const handelDeleteComment = async (id: string) => {
     try {
       const res = (await deleteComment(id)) as any;
-      
+
       if (res?.data?.data?.deletedCount > 0) {
         toast.success("comment delete successfully");
       }
@@ -296,11 +305,37 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
   };
 
   const handleRecipeNavigate = (recipe: TRecipe) => {
-    handleNavigate(recipe, userData?.data, router)
+    handleNavigate(recipe, userData?.data, router);
+  };
+
+  const handleSubmitRating = async (rating: number) => {
+    if (!userInfo.email) {
+      dispatch(logout());
+      return router.push("/login");
+    }
+    setSubmitRating(rating)
+    const ratingData = {
+      recipeId: recipeId,
+      userId: userInfo.id,
+      rating: rating
+    }
+    try {
+      const res = await addRating(ratingData) as any
+      console.log(res);
+      if (res.data) {
+        toast.success(res?.data?.massage)
+      }
+      if (res.error) {
+        toast.error(res.error.data.message || 'something went wrong!')
+      }
+    }
+    catch (err) {
+      toast.error(err?.message || 'something went wrong!')
+    }
   }
 
   if (isLoading || validationLoading) {
-    return <RecipeDetailsSkeleton />
+    return <RecipeDetailsSkeleton />;
   }
 
   return (
@@ -487,6 +522,31 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
             </div>
           </div>
           <Divider />
+          <div className="my-3 flex">
+            {Array.from({ length: 5 }).map((_, index) =>
+              index + 1 <= (hoverRating || submitRating) ? (
+                <div key={index}>
+                  <FaStar
+                    key={index}
+                    className={` text-[40px] transition-all text-[#1BEEA2]/70 p-1`}
+                    onClick={() => handleSubmitRating(index + 1)}
+                    onMouseEnter={() => setHoverRating(index + 1)}
+                    onMouseLeave={() => setHoverRating(0)}
+                  />
+                </div>
+              ) : (
+                <div key={index}>
+                  <FaRegStar
+                    key={index}
+                    className={` text-[40px] transition-all text-red-500/50 p-1`}
+                    onMouseEnter={() => setHoverRating(index + 1)}
+                    onMouseLeave={() => setHoverRating(0)}
+                  />
+                </div>
+              ),
+            )}
+          </div>
+          <Divider />
           <div className="flex flex-col-reverse md:flex-row lg:flex-row justify-center items-center flex-wrap gap-4 mt-3">
             <div className="flex gap-x-2 items-center">
               <div className="flex gap-x-2 items-center border p-1 rounded-md">
@@ -539,8 +599,8 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
                 <Button
                   className="bg-[#1BEEA2] ml-3 font-medium"
                   isLoading={commentLoading}
-                  type="submit"
                   size="sm"
+                  type="submit"
                 >
                   Submit
                 </Button>
@@ -588,12 +648,8 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
                         <p className="text-slate-600 text-xs flex gap-x-2 items-center">
                           <FaRegCalendarAlt className="text-[10px]" />
                           {""}
-                          {new Date(
-                            comment.createdAt,
-                          ).getDate()} /{""}
-                          {new Date(
-                            comment.createdAt,
-                          ).getMonth()} /{""}
+                          {new Date(comment.createdAt).getDate()} /{""}
+                          {new Date(comment.createdAt).getMonth()} /{""}
                           {new Date(comment.createdAt).getFullYear()}
                         </p>
                       </div>
@@ -629,8 +685,8 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
                 recipe._id !== data.data._id && (
                   <div
                     key={recipe._id}
-                    role="button"
                     className="flex mb-2 justify-start lg:justify-between items-center gap-x-2 border p-1 rounded-lg"
+                    role="button"
                     onClick={() => handleRecipeNavigate(recipe)}
                   >
                     <div className="relative ">

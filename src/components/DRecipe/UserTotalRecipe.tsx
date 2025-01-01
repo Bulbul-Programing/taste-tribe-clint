@@ -1,5 +1,3 @@
-import { Skeleton } from "@nextui-org/skeleton";
-
 import { useCountUserAllRecipesQuery } from "@/src/redux/Recipes/recipeManagementApi";
 
 const UserTotalRecipe = () => {

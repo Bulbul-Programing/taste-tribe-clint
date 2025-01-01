@@ -19,7 +19,7 @@ import Modal from "@/src/components/modal";
 
 const Login = () => {
   const searchParams = useSearchParams();
-  const redirect = searchParams.get("redirect")
+  const redirect = searchParams.get("redirect");
   const [loginUser] = useLoginUserMutation();
   const dispatch = useAppDispatch();
   const router = useRouter();

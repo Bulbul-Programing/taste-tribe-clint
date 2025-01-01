@@ -8,6 +8,9 @@ import Image from "next/image";
 import { toast } from "sonner";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
+import { FaSearch } from "react-icons/fa";
+import { FaAngleRight } from "react-icons/fa";
+import { FaAngleLeft } from "react-icons/fa";
 
 import Modal from "../modal";
 import TTInput from "../Form/TTInput";
@@ -28,14 +31,8 @@ import { verifyToken } from "@/src/utils/veryfyToken";
 import { TDecodedUser } from "@/src/types/decodedUser";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import { logout, useCurrentToken } from "@/src/redux/features/Auth/authSlice";
-
-import { FaSearch } from "react-icons/fa";
 import { useDebounce } from "@/src/utils/Debounce";
 import { TDebounceValue, TFilter } from "@/src/components/Recipe/AllRecipe";
-import { FaAngleRight } from "react-icons/fa";
-import { FaAngleLeft } from "react-icons/fa";
-import { current } from "@reduxjs/toolkit";
-
 
 export const tempData = {
   _id: "",
@@ -79,12 +76,17 @@ const AllRecipes = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemPerPage, setItemPerPage] = useState(10);
-  const [isOpen, setIsOpen] = useState(false)
-  const [sortFelid, setSortFelid] = useState<TFilter>({ limit: itemPerPage, page: currentPage, sort: "-createdAt" })
+  const [isOpen, setIsOpen] = useState(false);
+  const [sortFelid, setSortFelid] = useState<TFilter>({
+    limit: itemPerPage,
+    page: currentPage,
+    sort: "-createdAt",
+  });
   const { data, isLoading } = useUserAllRecipesQuery(sortFelid);
   const [searchValue, setSearchValue] = useState<TDebounceValue>({});
   const { debounceValue, loading: DebounceLoading } = useDebounce(searchValue);
-  const totalPage = Math.ceil(Number(recipeCount?.data) / itemPerPage)
+  const totalPage = Math.ceil(Number(recipeCount?.data) / itemPerPage);
+
   // const totalPage = Math.ceil(data?.data ? data?.data?.length : 0 / 10)
   useEffect(() => {
     if (userToken) {
@@ -104,13 +106,15 @@ const AllRecipes = () => {
 
   useEffect(() => {
     if (debounceValue?.searchTerm) {
-      setSortFelid({ ...sortFelid, searchTerm: debounceValue?.searchTerm })
+      setSortFelid({ ...sortFelid, searchTerm: debounceValue?.searchTerm });
+    } else {
+      setSortFelid({
+        limit: itemPerPage,
+        page: currentPage,
+        sort: "-createdAt",
+      });
     }
-    else {
-      setSortFelid({ limit: itemPerPage, page: currentPage, sort: "-createdAt" })
-    }
-  }, [DebounceLoading])
-
+  }, [DebounceLoading]);
 
   const handleModalClose = () => {
     setIsModalOpen(false), setIngredients([]);
@@ -304,7 +308,7 @@ const AllRecipes = () => {
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
-  }
+  };
 
   const handleSearch = (e: React.FormEvent<HTMLInputElement>) => {
     if (e.currentTarget.value.length > 0) {
@@ -315,35 +319,91 @@ const AllRecipes = () => {
   };
 
   const handleSort = (sortName: string) => {
-    setSortFelid({ ...sortFelid, sort: sortName })
-  }
+    setSortFelid({ ...sortFelid, sort: sortName });
+  };
+
   if (isLoading) {
     return <TableSkeleton />;
   }
+
   return (
     <div>
       <div>
-        <div className='flex items-center my-3 gap-x-3'>
+        <div className="flex items-center my-3 gap-x-3">
           <div className=" flex  gap-x-5">
             <div className="relative">
-              <input onChange={handleSearch} placeholder="Search Recipe hare" className="p-2 w-32 md:w-60 lg:w-60 outline-none border-2 focus:border-[#1BEEA2]/40 rounded-lg text-slate-500" type="text" name="" id="" />
-              <FaSearch className="absolute text-slate-500 hover:text-black top-3 cursor-pointer right-3"></FaSearch>
+              <input
+                className="p-2 w-32 md:w-60 lg:w-60 outline-none border-2 focus:border-[#1BEEA2]/40 rounded-lg text-slate-500"
+                id=""
+                name=""
+                placeholder="Search Recipe hare"
+                type="text"
+                onChange={handleSearch}
+              />
+              <FaSearch className="absolute text-slate-500 hover:text-black top-3 cursor-pointer right-3" />
             </div>
           </div>
           <div>
-            <button className="cursor-pointer border-2 rounded-md text-slate-500 px-2 py-2  " onClick={toggleDropdown}> Short by </button>
+            <button
+              className="cursor-pointer border-2 rounded-md text-slate-500 px-2 py-2  "
+              onClick={toggleDropdown}
+            >
+              {" "}
+              Short by{" "}
+            </button>
             {isOpen && (
-              <div className='absolute py-2 my-1 transition-all delay-300 flex flex-col w-56  z-50 bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5'>
-                <button onClick={() => handleSort('title')} className='my-1 w-[95%] hover:bg-[#1BEEA2] mx-auto py-1 border rounded-lg'>A to Z</button>
-                <button onClick={() => handleSort('-title')} className='my-1 w-[95%] hover:bg-[#1BEEA2] mx-auto py-1 border rounded-lg'>Z to A</button>
-                <button onClick={() => handleSort('cookingTime')} className='my-1 w-[95%] hover:bg-[#1BEEA2] mx-auto py-1 border rounded-lg'>Time Low to High</button>
-                <button onClick={() => handleSort('-cookingTime')} className='my-1 w-[95%] hover:bg-[#1BEEA2] mx-auto py-1 border rounded-lg'>Time High to Low</button>
-                <button onClick={() => handleSort('-createdAt')} className='my-1 w-[95%] hover:bg-[#1BEEA2] mx-auto py-1 border rounded-lg'>New to Old</button>
-                <button onClick={() => handleSort('createdAt')} className='my-1 w-[95%] hover:bg-[#1BEEA2] mx-auto py-1 border rounded-lg'>Old to New</button>
+              <div className="absolute py-2 my-1 transition-all delay-300 flex flex-col w-56  z-50 bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
+                <button
+                  className="my-1 w-[95%] hover:bg-[#1BEEA2] mx-auto py-1 border rounded-lg"
+                  onClick={() => handleSort("title")}
+                >
+                  A to Z
+                </button>
+                <button
+                  className="my-1 w-[95%] hover:bg-[#1BEEA2] mx-auto py-1 border rounded-lg"
+                  onClick={() => handleSort("-title")}
+                >
+                  Z to A
+                </button>
+                <button
+                  className="my-1 w-[95%] hover:bg-[#1BEEA2] mx-auto py-1 border rounded-lg"
+                  onClick={() => handleSort("cookingTime")}
+                >
+                  Time Low to High
+                </button>
+                <button
+                  className="my-1 w-[95%] hover:bg-[#1BEEA2] mx-auto py-1 border rounded-lg"
+                  onClick={() => handleSort("-cookingTime")}
+                >
+                  Time High to Low
+                </button>
+                <button
+                  className="my-1 w-[95%] hover:bg-[#1BEEA2] mx-auto py-1 border rounded-lg"
+                  onClick={() => handleSort("-createdAt")}
+                >
+                  New to Old
+                </button>
+                <button
+                  className="my-1 w-[95%] hover:bg-[#1BEEA2] mx-auto py-1 border rounded-lg"
+                  onClick={() => handleSort("createdAt")}
+                >
+                  Old to New
+                </button>
               </div>
             )}
           </div>
-          <Button onClick={() => (setSortFelid({ limit: itemPerPage, page: currentPage, sort: "-createdAt" }))} className='bg-red-400'>Clear Filter</Button>
+          <Button
+            className="bg-red-400"
+            onClick={() =>
+              setSortFelid({
+                limit: itemPerPage,
+                page: currentPage,
+                sort: "-createdAt",
+              })
+            }
+          >
+            Clear Filter
+          </Button>
         </div>
       </div>
       <div className="overflow-x-auto mb-5 md:mb-7 lg:mb-5 border-2 rounded-xl">
@@ -358,7 +418,9 @@ const AllRecipes = () => {
               <th className="px-2 py-3 text-left text-sm font-medium">
                 Category
               </th>
-              <th className="px-2 py-3 text-left text-sm font-medium">Status</th>
+              <th className="px-2 py-3 text-left text-sm font-medium">
+                Status
+              </th>
               <th className="px-2 py-3 text-center text-sm font-medium">
                 Actions
               </th>
@@ -378,7 +440,9 @@ const AllRecipes = () => {
                   />
                 </td>
                 <td className="min-w-44 py-4 font-semibold">{recipe.title}</td>
-                <td className="min-w-32 px-2 py-4">{recipe.cookingTime} mins</td>
+                <td className="min-w-32 px-2 py-4">
+                  {recipe.cookingTime} mins
+                </td>
                 <td className="px-2 min-w-32 py-4 capitalize text-gray-700">
                   {recipe.category.replace("_", " ")}
                 </td>
@@ -475,7 +539,9 @@ const AllRecipes = () => {
                   <Button
                     className={`ml-2 bg-[#17D893] font-semibold`}
                     isDisabled={
-                      instruction.length > 0 && instructionTime > 0 ? false : true
+                      instruction.length > 0 && instructionTime > 0
+                        ? false
+                        : true
                     }
                     size="lg"
                     type="button"
@@ -494,7 +560,9 @@ const AllRecipes = () => {
                         className="my-2 flex justify-between items-center gap-x-3 bg-slate-100 px-2 py-1 rounded-sm"
                       >
                         <h1 className="text-sm font-medium">{ingredient}</h1>
-                        <RxCross2 onClick={() => removeIngredient(ingredient)} />
+                        <RxCross2
+                          onClick={() => removeIngredient(ingredient)}
+                        />
                       </div>
                     ))}
                 </div>
@@ -558,7 +626,9 @@ const AllRecipes = () => {
                 <select
                   required
                   className="w-full border-2 rounded-md text-slate-500 px-2 py-4 mt-3 "
-                  defaultValue={updateProduct.premiumStatus ? "premium" : "free"}
+                  defaultValue={
+                    updateProduct.premiumStatus ? "premium" : "free"
+                  }
                   onChange={handleRecipeStatus}
                 >
                   <option className="border" value="">
@@ -602,13 +672,49 @@ const AllRecipes = () => {
         </div>
       </div>
       <div className="flex gap-x-2">
-        <button disabled={currentPage <= 1} onClick={() => (setCurrentPage(currentPage - 1), setSortFelid({ ...sortFelid, page: currentPage - 1 }))} className="px-4 py-1 bg-slate-100 rounded-md"><FaAngleLeft className="text-xl" /></button>
+        <button
+          className="px-4 py-1 bg-slate-100 rounded-md"
+          disabled={currentPage <= 1}
+          onClick={() => (
+            setCurrentPage(currentPage - 1),
+            setSortFelid({ ...sortFelid, page: currentPage - 1 })
+          )}
+        >
+          <FaAngleLeft className="text-xl" />
+        </button>
         {Array.from({ length: totalPage ? totalPage : 1 }).map((_, index) => (
-          <button key={index} onClick={() => (setCurrentPage(index + 1), setSortFelid({ ...sortFelid, page: index + 1 }))} className={` ${currentPage == Number(index) + 1 ? 'bg-[#1BEEA2]' : 'bg-slate-100'} px-4 py-1 rounded-md`}>{index + 1}</button>
+          <button
+            key={index}
+            className={` ${currentPage == Number(index) + 1 ? "bg-[#1BEEA2]" : "bg-slate-100"} px-4 py-1 rounded-md`}
+            onClick={() => (
+              setCurrentPage(index + 1),
+              setSortFelid({ ...sortFelid, page: index + 1 })
+            )}
+          >
+            {index + 1}
+          </button>
         ))}
-        <button disabled={currentPage === totalPage} onClick={() => (setCurrentPage(currentPage + 1), setSortFelid({ ...sortFelid, page: currentPage + 1 }))} className={` px-4 py-1 bg-slate-100 rounded-md`}><FaAngleRight className="text-xl" /></button>
+        <button
+          className={` px-4 py-1 bg-slate-100 rounded-md`}
+          disabled={currentPage === totalPage}
+          onClick={() => (
+            setCurrentPage(currentPage + 1),
+            setSortFelid({ ...sortFelid, page: currentPage + 1 })
+          )}
+        >
+          <FaAngleRight className="text-xl" />
+        </button>
         <div>
-          <select className="px-4 py-2 bg-slate-100 rounded-md" onChange={(e) => (setItemPerPage(Number(e.currentTarget.value)), setSortFelid({ ...sortFelid, limit: Number(e.currentTarget.value) }))}>
+          <select
+            className="px-4 py-2 bg-slate-100 rounded-md"
+            onChange={(e) => (
+              setItemPerPage(Number(e.currentTarget.value)),
+              setSortFelid({
+                ...sortFelid,
+                limit: Number(e.currentTarget.value),
+              })
+            )}
+          >
             <option value="10">10</option>
             <option value="20">20</option>
           </select>

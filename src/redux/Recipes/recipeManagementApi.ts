@@ -44,11 +44,12 @@ const recipeApi = baseApi.injectEndpoints({
             param.append(key[index], value[index] as string);
           }
         }
+
         return {
           url: "/recipe/user",
           method: "GET",
           params: param,
-        }
+        };
       },
       providesTags: ["recipe"],
     }),
@@ -123,7 +124,17 @@ const recipeApi = baseApi.injectEndpoints({
           body: { voteType: data.voteType },
         };
       },
-      invalidatesTags: ["recipeDetails", 'recipe'],
+      invalidatesTags: ["recipeDetails", "recipe"],
+    }),
+    addRecipeRating: builder.mutation({
+      query: (data) => {
+        return {
+          url: `/rating`,
+          method: "POST",
+          body: data,
+        };
+      },
+      invalidatesTags: ["recipeDetails", "recipe"],
     }),
   }),
 });
@@ -140,4 +151,5 @@ export const {
   useGetRecipeCommentsQuery,
   useAddVoteInRecipeMutation,
   useDeleteCommentMutation,
+  useAddRecipeRatingMutation
 } = recipeApi;

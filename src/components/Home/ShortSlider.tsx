@@ -3,6 +3,8 @@ import Link from "next/link";
 import { Autoplay, Pagination, EffectCreative } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { IoTimerOutline } from "react-icons/io5";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import ShortSliderSkeleton from "../Skelton/ShortSliderSkeleton";
 
@@ -11,10 +13,8 @@ import { TRecipe } from "@/src/types/recipe";
 import { handleNavigate } from "@/src/utils/handleRecipeNavigate";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import { logout, useCurrentToken } from "@/src/redux/features/Auth/authSlice";
-import { useEffect, useState } from "react";
 import { TDecodedUser } from "@/src/types/decodedUser";
 import { useUserInfoQuery } from "@/src/redux/Users/userManagementApi";
-import { useRouter } from "next/navigation";
 import { verifyToken } from "@/src/utils/veryfyToken";
 
 const ShortSlider = () => {
@@ -24,9 +24,13 @@ const ShortSlider = () => {
   });
   const userToken = useAppSelector(useCurrentToken);
   const dispatch = useAppDispatch();
-  const [userDecodedInfo, setUserDecodedInfo] = useState<TDecodedUser | any>({});
-  const { data: userData } = useUserInfoQuery(userDecodedInfo.email, { skip: !userDecodedInfo?.email })
-  const router = useRouter()
+  const [userDecodedInfo, setUserDecodedInfo] = useState<TDecodedUser | any>(
+    {},
+  );
+  const { data: userData } = useUserInfoQuery(userDecodedInfo.email, {
+    skip: !userDecodedInfo?.email,
+  });
+  const router = useRouter();
 
   useEffect(() => {
     if (userToken) {
@@ -43,9 +47,8 @@ const ShortSlider = () => {
   }, [userToken]);
 
   const handleRecipeNavigate = (recipeData: TRecipe) => {
-    handleNavigate(recipeData, userData?.data, router)
-  }
-
+    handleNavigate(recipeData, userData?.data, router);
+  };
 
   if (isLoading) {
     return <ShortSliderSkeleton />;
