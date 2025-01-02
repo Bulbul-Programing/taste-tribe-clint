@@ -11,7 +11,7 @@ const TopFiveFollowers = () => {
     <div>
       <div className="flex justify-center">
         <h1 className="text-4xl inline-block bg-black rounded-lg px-4 py-2 text-white font-bold">
-          Top Five Followers
+          Popular creators
         </h1>
       </div>
       <div className="flex flex-wrap gap-x-4 my-8 justify-center">
