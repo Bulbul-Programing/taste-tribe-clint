@@ -75,7 +75,7 @@ const UserProfileData = () => {
 
   const handleUpdateProfilePicture = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files![0];
-
+    setIsRequired(false);
     setSubmitButtonDisable(false);
     setProfilePhoto([file]);
     if (file) {
@@ -223,18 +223,21 @@ const UserProfileData = () => {
               name="currentPassword"
               required={isRequired}
               onChange={() => handleOnchange("currentPassword")}
+              type="password"
             />
             <TTInput
               label="New Password"
               name="newPassword"
               required={isRequired}
               onChange={() => handleOnchange("newPassword")}
+              type="password"
             />
             <TTInput
               label="Retype Password"
               name="retypePassword"
               required={isRequired}
               onChange={() => handleOnchange("retypePassword")}
+              type="password"
             />
           </div>
           <Button

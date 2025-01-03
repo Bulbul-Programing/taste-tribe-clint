@@ -120,13 +120,13 @@ const NavbarDropdown = () => {
                 <button className=" px-4 py-2 flex flex-col text-sm text-gray-700 w-full text-left">
                   <Link
                     className="mt-2 border w-full p-2 hover:bg-[#1BEEA2] transition-all ease-in rounded-md "
-                    href={`/user/profile`}
+                    href={`/${data?.data?.role}/profile`}
                   >
                     Profile
                   </Link>
                   <Link
                     className="mt-2 border w-full p-2 hover:bg-[#1BEEA2] transition-all ease-in rounded-md "
-                    href={`/user/dashboard`}
+                    href={`/${data?.data?.role}/dashboard`}
                   >
                     Dashboard
                   </Link>

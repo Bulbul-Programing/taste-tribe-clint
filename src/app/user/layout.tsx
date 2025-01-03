@@ -172,7 +172,7 @@ const UserDashboardLayout = ({ children }: { children: ReactNode }) => {
                   {item.icon}
                 </div>
                 <p
-                  className={` mt-1 ${isExpanded ? "text-base mt-2" : "text-[0px] mt-0"} transition-all duration-200 ease-in-out`}
+                  className={` ${isExpanded ? "text-base" : "text-[0px] mt-0"} transition-all duration-200 ease-in-out`}
                 >
                   {item.element}
                 </p>

@@ -2,14 +2,6 @@ import { baseApi } from "../api/baseApi";
 
 const userManagementApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    isUserExist: builder.query({
-      query: (args) => {
-        return {
-          url: `/auth/isExistUser/${args}`,
-          method: "GET",
-        };
-      },
-    }),
     userInfo: builder.query({
       query: (args) => {
         return {
@@ -40,22 +32,19 @@ const userManagementApi = baseApi.injectEndpoints({
       invalidatesTags: ["comment", "recipe", "recipeDetails"],
     }),
     getAllUser: builder.query({
-      query: (query) => {
-        const param = new URLSearchParams();
-
-        if (query?.args) {
-          const key = Object.keys(query?.args);
-          const value = Object.values(query?.args);
-
-          for (let index = 0; index < key.length; index++) {
-            param.append(key[index], value[index] as string);
-          }
-        }
-
+      query: () => {
         return {
-          url: `/auth/userRole/${query.role}`,
+          url: `/user/allUsers`,
           method: "GET",
-          params: param,
+        };
+      },
+      providesTags: ["user"],
+    }),
+    getAllUserCount: builder.query({
+      query: () => {
+        return {
+          url: `/user/allUsers/count`,
+          method: "GET",
         };
       },
       providesTags: ["user"],
@@ -157,9 +146,8 @@ const userManagementApi = baseApi.injectEndpoints({
 });
 
 export const {
-  useIsUserExistQuery,
-  useDeleteUserMutation,
   useGetAllUserQuery,
+  useGetAllUserCountQuery,
   useRegisterUserMutation,
   useLoginUserMutation,
   useUserInfoQuery,
