@@ -4,6 +4,7 @@ import { IoHomeOutline } from "react-icons/io5";
 import { MdOutlineDashboard, MdOutlineWorkspacePremium } from "react-icons/md";
 import { PiBowlFood } from "react-icons/pi";
 import { SlUserFollowing } from "react-icons/sl";
+import { FiUsers } from "react-icons/fi";
 
 export const dashboardNavItem = [
   {
@@ -17,8 +18,13 @@ export const dashboardNavItem = [
     icon: <FaRegUser />,
   },
   {
+    path: "/admin/users",
+    element: "Users",
+    icon: <FiUsers />,
+  },
+  {
     path: "/admin/recipe",
-    element: "My Recipe",
+    element: "Recipe",
     icon: <PiBowlFood />,
   },
   {

@@ -49,15 +49,6 @@ const userManagementApi = baseApi.injectEndpoints({
       },
       providesTags: ["user"],
     }),
-    deleteUser: builder.mutation({
-      query: (id) => {
-        return {
-          url: `/auth/deleteUser/${id}`,
-          method: "DELETE",
-        };
-      },
-      invalidatesTags: ["user"],
-    }),
     resetPasswordMailSend: builder.mutation({
       query: (email) => {
         return {
@@ -142,6 +133,15 @@ const userManagementApi = baseApi.injectEndpoints({
         };
       },
     }),
+    deleteUser: builder.mutation({
+      query: (id: string) => {
+        return {
+          url: `/user/delete/${id}`,
+          method: "DELETE",
+        };
+      },
+      invalidatesTags: ['user']
+    }),
   }),
 });
 
@@ -160,4 +160,5 @@ export const {
   useGetAllFollowersQuery,
   useGetAllFollowingQuery,
   useGetTopFiveFollowerQuery,
+  useDeleteUserMutation
 } = userManagementApi;

@@ -154,6 +154,17 @@ const recipeApi = baseApi.injectEndpoints({
       },
       providesTags: ["rating"],
     }),
+
+    getTotalRecipeCount: builder.query({
+      query: () => {
+        return {
+          url: `/recipe/count`,
+          method: "GET",
+        };
+      },
+      providesTags: ["recipe"],
+    }),
+
   }),
 });
 
@@ -172,4 +183,5 @@ export const {
   useAddRecipeRatingMutation,
   useRecipeAverageRatingQuery,
   useThisUserRatingThisRecipeQuery,
+  useGetTotalRecipeCountQuery
 } = recipeApi;
