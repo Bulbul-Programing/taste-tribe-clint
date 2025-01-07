@@ -142,6 +142,16 @@ const userManagementApi = baseApi.injectEndpoints({
       },
       invalidatesTags: ['user']
     }),
+    blockedUser: builder.mutation({
+      query: (data) => {
+        return {
+          url: `/user/blocked`,
+          method: "PUT",
+          body: data
+        };
+      },
+      invalidatesTags: ['user']
+    }),
   }),
 });
 
@@ -160,5 +170,6 @@ export const {
   useGetAllFollowersQuery,
   useGetAllFollowingQuery,
   useGetTopFiveFollowerQuery,
-  useDeleteUserMutation
+  useDeleteUserMutation,
+  useBlockedUserMutation,
 } = userManagementApi;

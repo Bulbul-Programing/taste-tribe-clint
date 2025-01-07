@@ -17,4 +17,5 @@ export type TUser = {
   following: any[];
   profilePicture: string;
   premiumStatus: boolean;
+  blockedUser: boolean
 };

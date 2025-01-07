@@ -1,8 +1,9 @@
 "use client"
-import { useDeleteUserMutation, useGetAllUserQuery } from "@/src/redux/Users/userManagementApi";
+import { useBlockedUserMutation, useDeleteUserMutation, useGetAllUserQuery } from "@/src/redux/Users/userManagementApi";
 import { TUser } from "@/src/types/decodedUser";
+import { GetUserInfo } from "@/src/utils/getUserInfo";
 import { useState } from "react";
-import { FiEdit, FiEye, FiEyeOff, FiTrash } from "react-icons/fi";
+import { FiEye, FiEyeOff, FiTrash } from "react-icons/fi";
 import { toast } from "sonner";
 import Swal from "sweetalert2";
 // import { IoEyeOffOutline } from "react-icons/io5";
@@ -11,8 +12,9 @@ import Swal from "sweetalert2";
 const AdminDashboardUser = () => {
     const { data, isLoading } = useGetAllUserQuery(undefined)
     const [deleteUser] = useDeleteUserMutation()
+    const [blockedUser] = useBlockedUserMutation()
     const [loading, setLoading] = useState(false)
-    console.log(data);
+    const userData = GetUserInfo()
 
     const handleUserDelete = (id: string) => {
         setLoading(true)
@@ -51,8 +53,25 @@ const AdminDashboardUser = () => {
         });
     }
 
-    const updateUserStatus = (id: string) => {
-        console.log(id);
+    const updateUserStatus = async (id: string, blockStatus: boolean) => {
+        const updateData = {
+            userId: id,
+            blockStatus
+        }
+        try {
+            const res = await blockedUser(updateData) as any
+            if (res?.data?.success) {
+                toast.success(res.data.massage)
+            }
+            if (res?.error?.data?.message) {
+                toast.error(res?.error?.data?.message || "An error occurred");
+            }
+        }
+        catch (err: any) {
+            console.log(err);
+            toast.error("An error occurred while updating user data.");
+            setLoading(false);
+        }
     }
 
     return (
@@ -64,10 +83,10 @@ const AdminDashboardUser = () => {
                             <th className="px-2 py-3 text-left text-sm font-medium">Image</th>
                             <th className="px-2 py-3 text-left text-sm font-medium">Name</th>
                             <th className="px-2 py-3 text-left text-sm font-medium">
-
+                                User role
                             </th>
                             <th className="px-2 py-3 text-left text-sm font-medium">
-
+                                User Status
                             </th>
                             <th className="px-2 py-3 text-left text-sm font-medium">
 
@@ -92,30 +111,74 @@ const AdminDashboardUser = () => {
                                 </td>
                                 <td className="min-w-44 py-2 font-semibold">{user.name}</td>
                                 <td className="min-w-32 px-2 ">
-
+                                    {user.role}
                                 </td>
-                                <td className="px-2 min-w-32 capitalize text-gray-700">
-
+                                <td className={`${user.blockedUser ? 'text-red-500' : 'text-blue-500'} px-2 min-w-32 capitalize`}>
+                                    {user.blockedUser ? 'Blocked' : 'Unblocked'}
                                 </td>
                                 <td
                                     className={` ${user.premiumStatus ? "text-blue-500 font-bold" : "text-orange-500 font-bold"} px-2 min-w-32 capitalize `}
                                 >
 
                                 </td>
-                                <td className="px-6 py-2 flex items-center justify-center space-x-4">
-                                    <button
-                                        className="text-blue-600 hover:text-blue-800"
-                                        onClick={() => updateUserStatus(user._id)}
-                                    >
-                                        <FiEye size={20} />
-                                    </button>
-                                    <button
-                                        className="text-red-600 hover:text-red-800"
-                                        onClick={() => handleUserDelete(user._id)}
-                                    >
-                                        <FiTrash size={20} />
-                                    </button>
-                                </td>
+                                {
+                                    userData?.data?.email === user.email
+                                        ?
+                                        <td className="px-6 py-2 flex items-center justify-center space-x-4">
+                                            {
+                                                user.blockedUser
+                                                    ?
+                                                    <button
+                                                        className=" disabled:text-blue-300 hover:cursor-not-allowed"
+                                                        disabled
+                                                    >
+                                                        <FiEye size={20} />
+                                                    </button>
+                                                    :
+                                                    <button
+                                                        className=" disabled:text-blue-300 hover:cursor-not-allowed"
+                                                        disabled
+                                                    >
+                                                        <FiEyeOff size={20} />
+                                                    </button>
+                                            }
+                                            <button
+                                                className="disabled:text-red-300 hover:cursor-not-allowed"
+                                                disabled
+                                            >
+                                                <FiTrash size={20} />
+                                            </button>
+                                        </td>
+                                        :
+                                        <td className="px-6 py-2 flex items-center justify-center space-x-4">
+                                            {
+                                                user.blockedUser
+                                                    ?
+                                                    <button
+                                                        className="text-blue-600 hover:text-blue-800"
+                                                        onClick={() => updateUserStatus(user._id, !user.blockedUser)}
+                                                    >
+                                                        <FiEyeOff size={20} />
+                                                    </button>
+                                                    :
+                                                    <button
+                                                        className="text-blue-600 hover:text-blue-800"
+                                                        onClick={() => updateUserStatus(user._id, !user.blockedUser)}
+                                                    >
+                                                        <FiEye size={20} />
+                                                    </button>
+                                            }
+
+                                            <button
+                                                className="text-red-600 hover:text-red-800"
+                                                onClick={() => handleUserDelete(user._id)}
+                                            >
+                                                <FiTrash size={20} />
+                                            </button>
+                                        </td>
+                                }
+
+
                             </tr>
                         ))}
                     </tbody>
