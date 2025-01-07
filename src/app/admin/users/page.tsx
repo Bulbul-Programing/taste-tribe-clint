@@ -76,6 +76,9 @@ const AdminDashboardUser = () => {
 
     return (
         <div>
+            <h1 className="text-xl md:text-3xl lg:text-3xl mb-5 font-bold text-center py-4 bg-slate-100 rounded-md">
+                Welcome to All Users Page.
+            </h1>
             <div className="overflow-x-auto mb-5 md:mb-7 lg:mb-5 border-2 rounded-xl">
                 <table className="min-w-full table-auto border-collapse bg-white shadow-md rounded-lg overflow-hidden">
                     <thead className="bg-gradient-to-r from-[#1BEEA2] to-[#17b47a] text-black">
