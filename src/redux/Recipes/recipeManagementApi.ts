@@ -164,7 +164,17 @@ const recipeApi = baseApi.injectEndpoints({
       },
       providesTags: ["recipe"],
     }),
-
+    adminBlockRecipe: builder.mutation({
+      query: (payload) => {
+        console.log(payload);
+        return {
+          url: `/recipe/adminBlockRecipe/${payload.recipeId}`,
+          method: "PUT",
+          body: payload
+        }
+      },
+      invalidatesTags: ['recipe']
+    })
   }),
 });
 
@@ -183,5 +193,6 @@ export const {
   useAddRecipeRatingMutation,
   useRecipeAverageRatingQuery,
   useThisUserRatingThisRecipeQuery,
-  useGetTotalRecipeCountQuery
+  useGetTotalRecipeCountQuery,
+  useAdminBlockRecipeMutation
 } = recipeApi;

@@ -38,11 +38,6 @@ export const dashboardNavItem = [
     icon: <HiOutlineUsers />,
   },
   {
-    path: "/admin/memberships",
-    element: "Memberships",
-    icon: <MdOutlineWorkspacePremium />,
-  },
-  {
     path: "/",
     element: "Home",
     icon: <IoHomeOutline />,

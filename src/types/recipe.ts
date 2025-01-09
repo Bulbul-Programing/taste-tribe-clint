@@ -1,3 +1,5 @@
+import { TUser } from "./decodedUser";
+
 type TInstruction = {
   title: string;
   time: string;
@@ -17,4 +19,20 @@ export type TRecipe = {
   premiumStatus: boolean;
   createdAt: string;
   updatedAt: string;
+  blockStatus: boolean
+};
+export type TAdminRecipe = {
+  _id: string;
+  userId: TUser;
+  title: string;
+  description: string;
+  ingredients: string[];
+  instructions: TInstruction[];
+  cookingTime: number;
+  category: string;
+  image: string;
+  premiumStatus: boolean;
+  createdAt: string;
+  updatedAt: string;
+  blockStatus: boolean
 };

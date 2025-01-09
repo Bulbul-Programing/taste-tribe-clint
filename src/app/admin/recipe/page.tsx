@@ -1,13 +1,17 @@
 "use client"
-import { useGetAllRecipesQuery } from '@/src/redux/Recipes/recipeManagementApi';
-import React from 'react';
+import AllRecipes from '@/src/components/DRecipe/AllRecipes';
+import { useAdminBlockRecipeMutation, useDeleteRecipeMutation, useGetAllRecipesQuery } from '@/src/redux/Recipes/recipeManagementApi';
+import { TAdminRecipe } from '@/src/types/recipe';
+import React, { useState } from 'react';
+import { FiEye, FiEyeOff, FiTrash } from 'react-icons/fi';
+import { toast } from 'sonner';
+import Swal from 'sweetalert2';
+import Recipe from '../../user/recipe/page';
 
 const AdminRecipePage = () => {
-    const { data } = useGetAllRecipesQuery(undefined)
-    console.log(data);
     return (
         <div>
-            <h1 className="text-xl md:text-3xl lg:text-3xl mb-5 font-bold text-center py-4 bg-slate-100 rounded-md">Welcome to All Recipes Page.</h1>
+            <Recipe />
         </div>
     );
 };

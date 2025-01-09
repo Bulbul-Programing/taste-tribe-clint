@@ -1,4 +1,4 @@
-import { FiEdit, FiTrash } from "react-icons/fi";
+import { FiEdit, FiEye, FiEyeOff, FiTrash } from "react-icons/fi";
 import { ChangeEvent, useEffect, useState } from "react";
 import { FieldValues, SubmitHandler } from "react-hook-form";
 import { Input } from "@nextui-org/input";
@@ -20,6 +20,7 @@ import TableSkeleton from "./TableSkeleton";
 
 import { TRecipe } from "@/src/types/recipe";
 import {
+  useAdminBlockRecipeMutation,
   useCountUserAllRecipesQuery,
   useDeleteRecipeMutation,
   useUpdateRecipeMutation,
@@ -33,11 +34,14 @@ import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
 import { logout, useCurrentToken } from "@/src/redux/features/Auth/authSlice";
 import { useDebounce } from "@/src/utils/Debounce";
 import { TDebounceValue, TFilter } from "@/src/components/Recipe/AllRecipe";
+import React from "react";
+import { GetUserInfo } from "@/src/utils/getUserInfo";
+import { ClientSegmentRoot } from "next/dist/client/components/client-segment";
 
 export const tempData = {
   _id: "",
-  userId: "",
   title: "",
+  userId : '',
   description: "",
   ingredients: [],
   instructions: [],
@@ -48,6 +52,7 @@ export const tempData = {
   createdAt: "",
   updatedAt: "",
   __v: 0,
+  blockStatus: false
 };
 
 const AllRecipes = () => {
@@ -70,7 +75,8 @@ const AllRecipes = () => {
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
   const userToken = useAppSelector(useCurrentToken);
-  const [userInfo, setUserInfo] = useState<TDecodedUser | any>({});
+  // const [userInfo, setUserInfo] = useState<TDecodedUser | any>({});
+  const {data : userInfo} = GetUserInfo()
   const [updateRecipe] = useUpdateRecipeMutation();
   const [deleteRecipe] = useDeleteRecipeMutation();
 
@@ -86,23 +92,25 @@ const AllRecipes = () => {
   const [searchValue, setSearchValue] = useState<TDebounceValue>({});
   const { debounceValue, loading: DebounceLoading } = useDebounce(searchValue);
   const totalPage = Math.ceil(Number(recipeCount?.data) / itemPerPage);
+  const [blockRecipe] = useAdminBlockRecipeMutation()
+  
 
   // const totalPage = Math.ceil(data?.data ? data?.data?.length : 0 / 10)
-  useEffect(() => {
-    if (userToken) {
-      const decodedToken = verifyToken(userToken) as TDecodedUser;
+  // useEffect(() => {
+  //   if (userToken) {
+  //     const decodedToken = verifyToken(userToken) as TDecodedUser;
 
-      if (decodedToken) {
-        setUserInfo(decodedToken);
-      } else {
-        dispatch(logout());
-        router.push("/login");
-      }
-    } else {
-      setUserInfo({});
-      router.push("/login");
-    }
-  }, [userToken]);
+  //     if (decodedToken) {
+  //       setUserInfo(decodedToken);
+  //     } else {
+  //       dispatch(logout());
+  //       router.push("/login");
+  //     }
+  //   } else {
+  //     setUserInfo({});
+  //     router.push("/login");
+  //   }
+  // }, [userToken]);
 
   useEffect(() => {
     if (debounceValue?.searchTerm) {
@@ -239,7 +247,7 @@ const AllRecipes = () => {
     data.ingredients = ingredients;
     data.cookingTime = Number(data.cookingTime);
     data.instructions = instructions;
-    data.userId = userInfo.id || "";
+    data.userId = userInfo?._id || "";
     data.category = category;
     data.description = description;
     data.premiumStatus = recipeStatus;
@@ -322,10 +330,31 @@ const AllRecipes = () => {
     setSortFelid({ ...sortFelid, sort: sortName });
   };
 
+  // Block or unBlock Recipe
+  const handleBlocRecipe = async (id: string, blockStatus: boolean) => {
+    const payload = {
+      recipeId: id,
+      blockStatus
+    }
+    try {
+      const res = await blockRecipe(payload) as any
+      if (res?.data?.success) {
+        toast.success(res.data.massage)
+      }
+      if (res?.error?.data?.message) {
+        toast.error(res?.error?.data?.message || "An error occurred");
+      }
+    }
+    catch (err: any) {
+      console.log(err);
+      toast.error("An error occurred while updating user data.");
+    }
+  }
+
   if (isLoading) {
     return <TableSkeleton />;
   }
-
+  // console.log(data?.data, userInfo?.id);
   return (
     <div>
       <div>
@@ -421,6 +450,9 @@ const AllRecipes = () => {
               <th className="px-2 py-3 text-left text-sm font-medium">
                 Status
               </th>
+              <th className="px-2 py-3 text-left text-sm font-medium">
+                Block Status
+              </th>
               <th className="px-2 py-3 text-center text-sm font-medium">
                 Actions
               </th>
@@ -451,13 +483,36 @@ const AllRecipes = () => {
                 >
                   {recipe.premiumStatus ? "Premium" : "Free"}
                 </td>
+                <td
+                  className={` ${recipe.blockStatus ? "text-orange-500 font-bold" : "text-blue-500 font-bold"} px-2 min-w-32 py-4 capitalize `}
+                >
+                  {recipe.blockStatus ? "Blocked" : "Unblocked"}
+                </td>
                 <td className="px-6 py-8 flex items-center justify-center space-x-4">
-                  <button
-                    className="text-blue-600 hover:text-blue-800"
-                    onClick={() => getUpdateRecipeData(recipe._id)}
-                  >
-                    <FiEdit size={20} />
-                  </button>
+                  {
+                    recipe.blockStatus ?
+                      <button
+                        className="text-blue-600 hover:text-blue-800"
+                        onClick={() => handleBlocRecipe(recipe._id, !recipe.blockStatus)}
+                      >
+                        <FiEyeOff size={20} />
+                      </button>
+                      :
+                      <button
+                        className="text-blue-600 hover:text-blue-800"
+                        onClick={() => handleBlocRecipe(recipe._id, !recipe.blockStatus)}
+                      >
+                        <FiEye size={20} />
+                      </button>
+                  }
+                  {
+                    recipe.userId === userInfo?._id && <button
+                      className="text-blue-600 hover:text-blue-800"
+                      onClick={() => getUpdateRecipeData(recipe._id)}
+                    >
+                      <FiEdit size={20} />
+                    </button>
+                  }
                   <button
                     className="text-red-600 hover:text-red-800"
                     onClick={() => handleDelete(recipe._id)}
