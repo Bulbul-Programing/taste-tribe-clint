@@ -140,17 +140,17 @@ const userManagementApi = baseApi.injectEndpoints({
           method: "DELETE",
         };
       },
-      invalidatesTags: ['user']
+      invalidatesTags: ["user"],
     }),
     blockedUser: builder.mutation({
       query: (data) => {
         return {
           url: `/user/blocked`,
           method: "PUT",
-          body: data
+          body: data,
         };
       },
-      invalidatesTags: ['user']
+      invalidatesTags: ["user"],
     }),
   }),
 });

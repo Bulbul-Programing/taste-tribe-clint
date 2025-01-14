@@ -30,10 +30,9 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL(`/login`, request.url));
     }
   }
-  console.log(pathname);
   if (user?.role && roleBasedRoutes[user?.role as Role]) {
     const routes = roleBasedRoutes[user?.role as Role];
-    console.log(routes);
+
     if (routes.some((route) => pathname.match(route))) {
       return NextResponse.next();
     }

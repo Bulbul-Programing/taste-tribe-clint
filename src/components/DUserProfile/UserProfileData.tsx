@@ -39,9 +39,12 @@ const UserProfileData = () => {
   const [loading, setLoading] = useState(false);
   const [profilePhoto, setProfilePhoto] = useState<File[] | []>([]);
   const [profilePreview, setProfilePreview] = useState<string[] | []>([]);
-
   const dispatch = useAppDispatch();
   const router = useRouter();
+
+  const [currentPass, setCurrentPass] = useState("");
+  const [newPass, setNewPass] = useState("");
+  const [retypePass, setRetypePass] = useState("");
 
   useEffect(() => {
     if (userToken) {
@@ -75,6 +78,7 @@ const UserProfileData = () => {
 
   const handleUpdateProfilePicture = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files![0];
+
     setIsRequired(false);
     setSubmitButtonDisable(false);
     setProfilePhoto([file]);
@@ -129,6 +133,9 @@ const UserProfileData = () => {
         setLoading(false);
         toast.success("User data updated successfully.");
         setSubmitButtonDisable(true);
+        setCurrentPass("");
+        setNewPass("");
+        setRetypePass("");
         setIsRequired(false);
       } else if (res?.error?.data?.message) {
         toast.error(res?.error?.data?.message || "An error occurred");
@@ -219,25 +226,28 @@ const UserProfileData = () => {
               name="phone"
             />
             <TTInput
+              defaultValue={currentPass}
               label="Current Password"
               name="currentPassword"
               required={isRequired}
-              onChange={() => handleOnchange("currentPassword")}
               type="password"
+              onChange={() => handleOnchange("currentPassword")}
             />
             <TTInput
+              defaultValue={newPass}
               label="New Password"
               name="newPassword"
               required={isRequired}
-              onChange={() => handleOnchange("newPassword")}
               type="password"
+              onChange={() => handleOnchange("newPassword")}
             />
             <TTInput
+              defaultValue={retypePass}
               label="Retype Password"
               name="retypePassword"
               required={isRequired}
-              onChange={() => handleOnchange("retypePassword")}
               type="password"
+              onChange={() => handleOnchange("retypePassword")}
             />
           </div>
           <Button

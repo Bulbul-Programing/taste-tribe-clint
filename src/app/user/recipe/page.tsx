@@ -24,7 +24,7 @@ import { useCreateRecipeMutation } from "@/src/redux/Recipes/recipeManagementApi
 import AllRecipes from "@/src/components/DRecipe/AllRecipes";
 import UserTotalRecipe from "@/src/components/DRecipe/UserTotalRecipe";
 
-export const categories = [
+export const categories: { key: string; label: string; }[] = [
   { key: "appetizers", label: "Appetizers" },
   { key: "breakfast", label: "Breakfast" },
   { key: "desserts", label: "Desserts" },
@@ -133,13 +133,14 @@ const Recipe = () => {
         setLoading(false);
         handleModalClose();
 
-        return toast.success(res.data.massage);
+        return toast.success(res?.data?.massage);
       }
 
       if (res?.error) {
         setLoading(false);
+        console.log(res.error);
 
-        return toast.error(res.error.message.message);
+        return toast.error(res?.error?.data?.message);
       }
     } catch (err) {
       console.error(err);

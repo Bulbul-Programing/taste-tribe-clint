@@ -1,7 +1,7 @@
 import { FaRegUser } from "react-icons/fa";
 import { HiOutlineUsers } from "react-icons/hi2";
 import { IoHomeOutline } from "react-icons/io5";
-import { MdOutlineDashboard, MdOutlineWorkspacePremium } from "react-icons/md";
+import { MdOutlineDashboard } from "react-icons/md";
 import { PiBowlFood } from "react-icons/pi";
 import { SlUserFollowing } from "react-icons/sl";
 import { FiUsers } from "react-icons/fi";

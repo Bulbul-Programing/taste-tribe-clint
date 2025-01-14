@@ -4,7 +4,7 @@ import { Button } from "@nextui-org/button";
 import Link from "next/link";
 import { FieldValues, SubmitHandler } from "react-hook-form";
 import { toast } from "sonner";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import TTInput from "@/src/components/Form/TTInput";
@@ -18,8 +18,6 @@ import { setUser } from "@/src/redux/features/Auth/authSlice";
 import Modal from "@/src/components/modal";
 
 const Login = () => {
-  const searchParams = useSearchParams();
-  const redirect = searchParams.get("redirect");
   const [loginUser] = useLoginUserMutation();
   const dispatch = useAppDispatch();
   const router = useRouter();

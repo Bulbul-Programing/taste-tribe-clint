@@ -37,11 +37,11 @@ const UserDashboardSkeleton: React.FC = () => {
       </div>
 
       {/* Content Skeleton */}
-      <div className="m-3 lg:ml-20">
+      {/* <div className="m-3 lg:ml-20">
         <div className="w-full h-48 bg-gray-200 rounded-lg animate-pulse" />
         <div className="w-full h-48 bg-gray-200 mt-4 rounded-lg animate-pulse" />
         <div className="w-full h-48 bg-gray-200 mt-4 rounded-lg animate-pulse" />
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -106,16 +106,16 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
     }
   }, [userToken]);
 
-  useEffect(() => {
-    setValidationLoading(true);
-    if (data?.data?.premiumStatus) {
-      if (!userData) {
-        router.push("/login");
-      }
-      handleNavigate(data?.data, userData?.data, router);
-    }
-    setValidationLoading(false);
-  });
+  // useEffect(() => {
+  //   setValidationLoading(true);
+  //   if (data?.data?.premiumStatus) {
+  //     if (!userData) {
+  //       router.push("/login");
+  //     }
+  //     handleNavigate(data?.data, userData?.data, router);
+  //   }
+  //   setValidationLoading(false);
+  // });
 
   const toggleIngredient = (ingredient: string) => {
     setSelectedIngredients((prev) =>

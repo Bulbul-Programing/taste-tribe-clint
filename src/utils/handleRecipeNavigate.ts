@@ -11,7 +11,6 @@ export const handleNavigate = (
   if (data.premiumStatus === false) {
     return router.push(`/recipeDetails/${data._id}`);
   }
-
   if (data.premiumStatus) {
     if (!userInfo?.email) {
       return router.push(`/login?redirect=recipes`);

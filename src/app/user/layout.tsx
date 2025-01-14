@@ -125,15 +125,15 @@ const UserDashboardLayout = ({ children }: { children: ReactNode }) => {
         <div
           className=" absolute min-h-screen h-full inset-0 bg-black opacity-10 z-20"
           onClick={handleOutsideClick}
-        ></div>
+        />
       )}
 
       <div
-        className={`min-h-screen h-full absolute lg:block bg-[#f1f2f7] text-black transition-all duration-300 ease-in-out transform ${isExpanded ? "w-48 block" : "w-16 hidden"
-          } ${isDrawerOpen
-            ? "translate-x-0"
-            : "-translate-x-full lg:translate-x-0"
-          } z-30`}
+        className={`min-h-screen h-full absolute lg:block bg-[#f1f2f7] text-black transition-all duration-300 ease-in-out transform ${
+          isExpanded ? "w-48 block" : "w-16 hidden"
+        } ${
+          isDrawerOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        } z-30`}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
@@ -155,8 +155,9 @@ const UserDashboardLayout = ({ children }: { children: ReactNode }) => {
           {dashboardNavItem.map((item, index) => (
             <Link
               key={index}
-              className={`flex gap-x-2  ${isExpanded ? "justify-start" : "justify-center"
-                } items-center ${currentPage === item.path ? isExpanded && "bg-[#1BEEA2] rounded-lg" : ""} hover:bg-[#1BEEA2] p-2 m-2 hover:rounded-md`}
+              className={`flex gap-x-2  ${
+                isExpanded ? "justify-start" : "justify-center"
+              } items-center ${currentPage === item.path ? isExpanded && "bg-[#1BEEA2] rounded-lg" : ""} hover:bg-[#1BEEA2] p-2 m-2 hover:rounded-md`}
               href={item.path}
               onClick={() => setIsDrawerOpen(false)}
             >

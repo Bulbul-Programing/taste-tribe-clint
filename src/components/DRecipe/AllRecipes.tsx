@@ -7,10 +7,9 @@ import { Button } from "@nextui-org/button";
 import Image from "next/image";
 import { toast } from "sonner";
 import Swal from "sweetalert2";
-import { useRouter } from "next/navigation";
-import { FaSearch } from "react-icons/fa";
-import { FaAngleRight } from "react-icons/fa";
+import { FaAngleRight, FaSearch } from "react-icons/fa";
 import { FaAngleLeft } from "react-icons/fa";
+import React from "react";
 
 import Modal from "../modal";
 import TTInput from "../Form/TTInput";
@@ -28,20 +27,14 @@ import {
 } from "@/src/redux/Recipes/recipeManagementApi";
 import { categories } from "@/src/app/user/recipe/page";
 import { hostImages } from "@/src/utils/ImageUpload";
-import { verifyToken } from "@/src/utils/veryfyToken";
-import { TDecodedUser } from "@/src/types/decodedUser";
-import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
-import { logout, useCurrentToken } from "@/src/redux/features/Auth/authSlice";
 import { useDebounce } from "@/src/utils/Debounce";
 import { TDebounceValue, TFilter } from "@/src/components/Recipe/AllRecipe";
-import React from "react";
 import { GetUserInfo } from "@/src/utils/getUserInfo";
-import { ClientSegmentRoot } from "next/dist/client/components/client-segment";
 
 export const tempData = {
   _id: "",
   title: "",
-  userId : '',
+  userId: "",
   description: "",
   ingredients: [],
   instructions: [],
@@ -52,7 +45,7 @@ export const tempData = {
   createdAt: "",
   updatedAt: "",
   __v: 0,
-  blockStatus: false
+  blockStatus: false,
 };
 
 const AllRecipes = () => {
@@ -63,8 +56,6 @@ const AllRecipes = () => {
   const [instructions, setInstructions] = useState<
     { title: string; time: number }[] | []
   >([]);
-  const router = useRouter();
-  const dispatch = useAppDispatch();
   const { data: recipeCount } = useCountUserAllRecipesQuery(undefined);
   const [ingredient, setIngredient] = useState<string>("");
   const [ingredients, setIngredients] = useState<string[] | []>([]);
@@ -74,9 +65,8 @@ const AllRecipes = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
-  const userToken = useAppSelector(useCurrentToken);
   // const [userInfo, setUserInfo] = useState<TDecodedUser | any>({});
-  const {data : userInfo} = GetUserInfo()
+  const { data: userInfo } = GetUserInfo();
   const [updateRecipe] = useUpdateRecipeMutation();
   const [deleteRecipe] = useDeleteRecipeMutation();
 
@@ -92,8 +82,7 @@ const AllRecipes = () => {
   const [searchValue, setSearchValue] = useState<TDebounceValue>({});
   const { debounceValue, loading: DebounceLoading } = useDebounce(searchValue);
   const totalPage = Math.ceil(Number(recipeCount?.data) / itemPerPage);
-  const [blockRecipe] = useAdminBlockRecipeMutation()
-  
+  const [blockRecipe] = useAdminBlockRecipeMutation();
 
   // const totalPage = Math.ceil(data?.data ? data?.data?.length : 0 / 10)
   // useEffect(() => {
@@ -334,27 +323,28 @@ const AllRecipes = () => {
   const handleBlocRecipe = async (id: string, blockStatus: boolean) => {
     const payload = {
       recipeId: id,
-      blockStatus
-    }
+      blockStatus,
+    };
+
     try {
-      const res = await blockRecipe(payload) as any
+      const res = (await blockRecipe(payload)) as any;
+
       if (res?.data?.success) {
-        toast.success(res.data.massage)
+        toast.success(res.data.massage);
       }
       if (res?.error?.data?.message) {
         toast.error(res?.error?.data?.message || "An error occurred");
       }
-    }
-    catch (err: any) {
+    } catch (err: any) {
       console.log(err);
       toast.error("An error occurred while updating user data.");
     }
-  }
+  };
 
   if (isLoading) {
     return <TableSkeleton />;
   }
-  // console.log(data?.data, userInfo?.id);
+
   return (
     <div>
       <div>
@@ -489,30 +479,33 @@ const AllRecipes = () => {
                   {recipe.blockStatus ? "Blocked" : "Unblocked"}
                 </td>
                 <td className="px-6 py-8 flex items-center justify-center space-x-4">
-                  {
-                    recipe.blockStatus ?
-                      <button
-                        className="text-blue-600 hover:text-blue-800"
-                        onClick={() => handleBlocRecipe(recipe._id, !recipe.blockStatus)}
-                      >
-                        <FiEyeOff size={20} />
-                      </button>
-                      :
-                      <button
-                        className="text-blue-600 hover:text-blue-800"
-                        onClick={() => handleBlocRecipe(recipe._id, !recipe.blockStatus)}
-                      >
-                        <FiEye size={20} />
-                      </button>
-                  }
-                  {
-                    recipe.userId === userInfo?._id && <button
+                  {recipe.blockStatus ? (
+                    <button
+                      className="text-blue-600 hover:text-blue-800"
+                      onClick={() =>
+                        handleBlocRecipe(recipe._id, !recipe.blockStatus)
+                      }
+                    >
+                      <FiEyeOff size={20} />
+                    </button>
+                  ) : (
+                    <button
+                      className="text-blue-600 hover:text-blue-800"
+                      onClick={() =>
+                        handleBlocRecipe(recipe._id, !recipe.blockStatus)
+                      }
+                    >
+                      <FiEye size={20} />
+                    </button>
+                  )}
+                  {recipe.userId === userInfo?._id && (
+                    <button
                       className="text-blue-600 hover:text-blue-800"
                       onClick={() => getUpdateRecipeData(recipe._id)}
                     >
                       <FiEdit size={20} />
                     </button>
-                  }
+                  )}
                   <button
                     className="text-red-600 hover:text-red-800"
                     onClick={() => handleDelete(recipe._id)}

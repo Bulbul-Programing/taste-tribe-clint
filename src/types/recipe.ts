@@ -19,7 +19,7 @@ export type TRecipe = {
   premiumStatus: boolean;
   createdAt: string;
   updatedAt: string;
-  blockStatus: boolean
+  blockStatus: boolean;
 };
 export type TAdminRecipe = {
   _id: string;
@@ -34,5 +34,5 @@ export type TAdminRecipe = {
   premiumStatus: boolean;
   createdAt: string;
   updatedAt: string;
-  blockStatus: boolean
+  blockStatus: boolean;
 };

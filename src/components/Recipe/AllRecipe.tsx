@@ -45,7 +45,7 @@ export type TDebounceValue = {
 const AllRecipe = () => {
   const [selectCategory, setSelectCategory] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemPerPage, setItemPerPage] = useState(5);
+  const [itemPerPage, setItemPerPage] = useState(8);
   const [searchValue, setSearchValue] = useState<TDebounceValue>({});
   const { debounceValue, loading } = useDebounce(searchValue);
   const [sortFelid, setSortFelid] = useState<TFilter>({
