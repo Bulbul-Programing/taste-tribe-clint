@@ -52,7 +52,6 @@ const AdminAllUser = () => {
             return toast.error(res?.error?.data?.message);
           }
         } catch (err: any) {
-          console.error(err);
           toast.error(err?.data?.message || "something went wrong");
           setLoading(false);
         }
@@ -76,7 +75,6 @@ const AdminAllUser = () => {
         toast.error(res?.error?.data?.message || "An error occurred");
       }
     } catch (err: any) {
-      console.log(err);
       toast.error("An error occurred while updating user data.");
       setLoading(false);
     }
@@ -84,6 +82,8 @@ const AdminAllUser = () => {
 
   if (isLoading) {
     return <UsersPageSkeleton />;
+  }
+  if (loading) {
   }
 
   return (

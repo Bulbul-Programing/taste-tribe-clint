@@ -4,7 +4,6 @@
 import { IoHomeOutline, IoMenu } from "react-icons/io5";
 import { ReactNode, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { toast } from "sonner";
 import Link from "next/link";
 import { SlUserFollowing } from "react-icons/sl";
 import { FaRegUser } from "react-icons/fa";
@@ -46,11 +45,6 @@ const UserDashboardLayout = ({ children }: { children: ReactNode }) => {
       setUserInfo({});
     }
   }, [userToken]);
-
-  const handleLogout = () => {
-    dispatch(logout());
-    toast.success("Logout successful");
-  };
 
   const handleMouseEnter = () => {
     setIsExpanded(true);

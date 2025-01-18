@@ -192,7 +192,6 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
         setLoading(false);
       }
     } catch (error: any) {
-      console.log(error);
       toast.error("An error occurred while updating user data.");
       setLoading(false);
     }
@@ -221,7 +220,6 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
         setLoading(false);
       }
     } catch (error: any) {
-      console.log(error);
       toast.error("An error occurred while updating user data.");
       setLoading(false);
     }
@@ -255,7 +253,6 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
         toast.error(res.error.data.message);
       }
     } catch (error) {
-      console.log(error);
       setCommentLoading(false);
       toast.error("An error occurred while adding comment.");
     }
@@ -299,7 +296,6 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
         toast.error(res?.error?.data?.message);
       }
     } catch (error) {
-      console.log(error);
       toast.error("An error occurred while voting");
     }
   };
@@ -315,7 +311,6 @@ const RecipeDetailsComponent = ({ recipeId }: { recipeId: string }) => {
         toast.error(res?.error?.data?.message);
       }
     } catch (error) {
-      console.log(error);
       toast.error("An error occurred while deleting comment");
     }
   };

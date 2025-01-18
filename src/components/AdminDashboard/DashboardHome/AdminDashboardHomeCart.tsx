@@ -10,7 +10,7 @@ import { useGetTotalRecipeCountQuery } from "@/src/redux/Recipes/recipeManagemen
 
 const AdminDashboardHomeCart = () => {
   const userInfo = GetUserInfo();
-  const { data: totalUser, isLoading } = useGetAllUserCountQuery(undefined);
+  const { data: totalUser } = useGetAllUserCountQuery(undefined);
   const { data: totalRecipe } = useGetTotalRecipeCountQuery(undefined);
   const router = useRouter();
 
@@ -22,7 +22,7 @@ const AdminDashboardHomeCart = () => {
     <div className="grid gap-x-3 grid-cols-4 my-5">
       <button
         className="bg-slate-100 cursor-pointer flex gap-x-6  items-center justify-between p-3 rounded-md"
-        onClick={() => handleRoute(`/${userInfo.data.role}/followers`)}
+        onClick={() => handleRoute(`/${userInfo.data.role}/users`)}
       >
         <div>
           <p className="text-slate-600 text-left text-lg font-medium">Total </p>

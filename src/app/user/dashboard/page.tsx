@@ -20,11 +20,10 @@ const UserDashboard = () => {
   const userToken = useAppSelector(useCurrentToken);
   const dispatch = useAppDispatch();
   const [userInfo, setUserInfo] = useState<TDecodedUser | any>({});
-  const { data, isLoading } = useUserInfoQuery(userInfo.email, {
+  const { data } = useUserInfoQuery(userInfo.email, {
     skip: !userInfo.email,
   });
-  const { data: userRecipes, isLoading: userRecipesLoading } =
-    useCountUserAllRecipesQuery(undefined);
+  const { data: userRecipes } = useCountUserAllRecipesQuery(undefined);
   const router = useRouter();
 
   useEffect(() => {

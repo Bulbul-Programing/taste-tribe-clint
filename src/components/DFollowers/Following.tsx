@@ -58,7 +58,6 @@ const Following = () => {
         setLoading(false);
       }
     } catch (error: any) {
-      console.log(error);
       toast.error("An error occurred while updating user data.");
       setLoading(false);
     }

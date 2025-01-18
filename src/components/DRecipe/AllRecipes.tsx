@@ -25,11 +25,11 @@ import {
   useUpdateRecipeMutation,
   useUserAllRecipesQuery,
 } from "@/src/redux/Recipes/recipeManagementApi";
-import { categories } from "@/src/app/user/recipe/page";
 import { hostImages } from "@/src/utils/ImageUpload";
 import { useDebounce } from "@/src/utils/Debounce";
 import { TDebounceValue, TFilter } from "@/src/components/Recipe/AllRecipe";
 import { GetUserInfo } from "@/src/utils/getUserInfo";
+import { categories, category } from "@/src/utils/category";
 
 export const tempData = {
   _id: "",
@@ -169,7 +169,6 @@ const AllRecipes = () => {
             return toast.error(res?.error?.data?.message);
           }
         } catch (err: any) {
-          console.error(err);
           toast.error(err?.data?.message || "something went wrong");
           setLoading(false);
         }
@@ -268,7 +267,6 @@ const AllRecipes = () => {
         return toast.error(res?.error?.data?.message);
       }
     } catch (err: any) {
-      console.error(err);
       toast.error(err?.data?.message || "something went wrong");
       setLoading(false);
     }
@@ -336,7 +334,6 @@ const AllRecipes = () => {
         toast.error(res?.error?.data?.message || "An error occurred");
       }
     } catch (err: any) {
-      console.log(err);
       toast.error("An error occurred while updating user data.");
     }
   };
@@ -661,7 +658,7 @@ const AllRecipes = () => {
                   <option className="border" value="">
                     Select Category
                   </option>
-                  {categories.map((category) => (
+                  {categories.map((category : category) => (
                     <option
                       key={category.key}
                       className="text-gray-900 bg-gray-100 py-2 px-4"

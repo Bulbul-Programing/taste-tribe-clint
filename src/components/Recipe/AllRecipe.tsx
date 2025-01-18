@@ -1,4 +1,5 @@
 "use client";
+
 import { useGetAllRecipesQuery } from "@/src/redux/Recipes/recipeManagementApi";
 
 import { useEffect, useState } from "react";
@@ -20,12 +21,12 @@ import NoDataFound from "./NoDataFound";
 import { TDecodedUser } from "@/src/types/decodedUser";
 import { logout, useCurrentToken } from "@/src/redux/features/Auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
-import { categories } from "@/src/app/user/recipe/page";
 import { useDebounce } from "@/src/utils/Debounce";
 import { verifyToken } from "@/src/utils/veryfyToken";
 import { TRecipe } from "@/src/types/recipe";
 import { handleNavigate } from "@/src/utils/handleRecipeNavigate";
 import { useUserInfoQuery } from "@/src/redux/Users/userManagementApi";
+import { categories, category } from "@/src/utils/category";
 
 export type TFilter = {
   searchTerm?: string;
@@ -45,7 +46,7 @@ export type TDebounceValue = {
 const AllRecipe = () => {
   const [selectCategory, setSelectCategory] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemPerPage, setItemPerPage] = useState(8);
+  const [itemPerPage, setItemPerPage] = useState(7);
   const [searchValue, setSearchValue] = useState<TDebounceValue>({});
   const { debounceValue, loading } = useDebounce(searchValue);
   const [sortFelid, setSortFelid] = useState<TFilter>({
@@ -228,7 +229,7 @@ const AllRecipe = () => {
           slidesPerView="auto" // Dynamic slides
           spaceBetween={20} // Adjust space between slides
         >
-          {categories.map((category: { key: string; label: string }) => (
+          {categories.map((category: category) => (
             <SwiperSlide key={category.key} style={{ width: "150px" }}>
               <button
                 className={`border ${selectCategory === category.key && "bg-[#1BEEA2]"} hover:border-[#1BEEA2] transition-all text-center rounded-lg px-4 py-1 cursor-pointer`}

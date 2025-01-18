@@ -47,7 +47,6 @@ const Login = () => {
         setLoading(false);
       }
     } catch (err: any) {
-      console.error("error", err);
       toast.error(err?.message || "An error occurred");
       setLoading(false);
     }
@@ -65,7 +64,6 @@ const Login = () => {
         setIsModalOpen(false);
       }
     } catch (err: any) {
-      console.error("error", err);
       setModalLoading(false);
       setIsModalOpen(false);
       toast.error(err?.message || "An error occurred");

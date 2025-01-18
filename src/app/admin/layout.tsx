@@ -4,7 +4,6 @@
 import { IoMenu } from "react-icons/io5";
 import { ReactNode, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { toast } from "sonner";
 import Link from "next/link";
 
 import { useUserInfoQuery } from "@/src/redux/Users/userManagementApi";
@@ -19,7 +18,7 @@ const AdminDashboardLayout = ({ children }: { children: ReactNode }) => {
   const userToken = useAppSelector(useCurrentToken);
   const dispatch = useAppDispatch();
   const [userInfo, setUserInfo] = useState<TDecodedUser | any>({});
-  const { data, isLoading } = useUserInfoQuery(userInfo.email, {
+  const { data } = useUserInfoQuery(userInfo.email, {
     skip: !userInfo.email,
   });
   const [isExpanded, setIsExpanded] = useState(false);
@@ -40,11 +39,6 @@ const AdminDashboardLayout = ({ children }: { children: ReactNode }) => {
       setUserInfo({});
     }
   }, [userToken]);
-
-  const handleLogout = () => {
-    dispatch(logout());
-    toast.success("Logout successful");
-  };
 
   const handleMouseEnter = () => {
     setIsExpanded(true);

@@ -27,7 +27,6 @@ const Membership = () => {
         router.push("/user/dashboard");
       }
     } catch (err) {
-      console.error(err);
       toast.error("An error occurred while checking out");
     }
   };

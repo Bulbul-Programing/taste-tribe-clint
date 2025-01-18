@@ -23,28 +23,7 @@ import { TDecodedUser } from "@/src/types/decodedUser";
 import { useCreateRecipeMutation } from "@/src/redux/Recipes/recipeManagementApi";
 import AllRecipes from "@/src/components/DRecipe/AllRecipes";
 import UserTotalRecipe from "@/src/components/DRecipe/UserTotalRecipe";
-
-export const categories: { key: string; label: string; }[] = [
-  { key: "appetizers", label: "Appetizers" },
-  { key: "breakfast", label: "Breakfast" },
-  { key: "desserts", label: "Desserts" },
-  { key: "beverages", label: "Beverages" },
-  { key: "side_dishes", label: "Side_Dishes" },
-  { key: "snacks", label: "Snacks" },
-  { key: "soups", label: "Soups" },
-  { key: "salads", label: "Salads" },
-  { key: "vegetarian", label: "Vegetarian" },
-  { key: "vegan", label: "Vegan" },
-  { key: "gluten_free", label: "Gluten_Free" },
-  { key: "seafood", label: "Seafood" },
-  { key: "meat", label: "Meat" },
-  { key: "poultry", label: "Poultry" },
-  { key: "pasta", label: "Pasta" },
-  { key: "rice_and_grains", label: "Rice" },
-  { key: "baking", label: "Baking" },
-  { key: "holiday", label: "Holiday" },
-  { key: "international", label: "International" },
-];
+import { categories, category } from "@/src/utils/category";
 
 const Recipe = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -138,12 +117,10 @@ const Recipe = () => {
 
       if (res?.error) {
         setLoading(false);
-        console.log(res.error);
 
         return toast.error(res?.error?.data?.message);
       }
     } catch (err) {
-      console.error(err);
       toast.error("something went wrong");
       setLoading(false);
     }
@@ -368,7 +345,7 @@ const Recipe = () => {
                 <option className="border" value="">
                   Select Category
                 </option>
-                {categories.map((category) => (
+                {categories.map((category : category) => (
                   <option
                     key={category.key}
                     className="text-gray-900 bg-gray-100 py-2 px-4"
