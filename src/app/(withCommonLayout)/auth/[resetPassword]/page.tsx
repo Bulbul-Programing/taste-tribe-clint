@@ -55,7 +55,7 @@ const ResetPassword = () => {
   return (
     <div>
       <Modal width={400} onClose={() => setSubmitResetCode(false)}>
-        <h1 className="text-lg font-medium text-center mb-3">
+        <h1 className="text-lg to-blue-100 font-medium text-center mb-3">
           Reset Your password!
         </h1>
         <TTForm onSubmit={handleSubmit}>
